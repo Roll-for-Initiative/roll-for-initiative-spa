@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 import { type Player } from '../types/player'
@@ -6,7 +6,7 @@ import { type Player } from '../types/player'
 const storeId = 'players'
 
 export const usePlayerStore = defineStore(storeId, () => {
-  const npc = ref<Player>({
+  const dungeonMaster = ref<Player>({
     id: crypto.randomUUID(),
     name: 'Monsters',
     modifier: 0
@@ -20,6 +20,8 @@ export const usePlayerStore = defineStore(storeId, () => {
     }
   ])
 
+  const playerCount = computed(() => players.value.length)
+
   const addPlayer = () => {
     const name = `Player ${players.value.length + 1}`
     players.value.push({
@@ -30,8 +32,9 @@ export const usePlayerStore = defineStore(storeId, () => {
   }
 
   return {
-    npc,
+    dungeonMaster,
     players,
+    playerCount,
     addPlayer
   }
 })
