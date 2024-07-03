@@ -8,7 +8,7 @@
     </div>
 
     <div>
-      <div v-for="(player, index) in playerStore.players" :key="index">
+      <div v-for="player in playerStore.players" :key="player.id">
         {{ player.name }}
         {{ player.modifier }}
       </div>
