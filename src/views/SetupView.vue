@@ -1,5 +1,5 @@
 <template>
   <main>
-    <h1>Hello world!</h1>
+    <h1>Add new players</h1>
   </main>
 </template>

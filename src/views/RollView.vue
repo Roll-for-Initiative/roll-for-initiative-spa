@@ -1,5 +1,5 @@
 <template>
   <main>
-    <h1>Hello world!</h1>
+    <h1>Roll for initiative!</h1>
   </main>
 </template>
