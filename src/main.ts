@@ -3,8 +3,10 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import Scene from '@/components/Scene.vue'
 
 const app = createApp(App)
+app.component('Scene', Scene)
 
 app.use(createPinia())
 app.use(router)
