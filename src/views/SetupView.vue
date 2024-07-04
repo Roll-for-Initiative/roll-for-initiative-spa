@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col">
         <h2>Dungeon Master</h2>
-        <PlayerCard :player="playerStore.dungeonMaster" />
+        <PlayerCard :player="playerStore.dungeonMaster" :enableDelete="false" />
       </div>
     </div>
 

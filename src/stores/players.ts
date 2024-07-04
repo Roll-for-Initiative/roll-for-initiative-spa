@@ -23,7 +23,7 @@ export const usePlayerStore = defineStore(storeId, () => {
   const playerCount = computed(() => players.value.length)
 
   const addPlayer = () => {
-    const name = `Player ${players.value.length + 1}`
+    const name = `Player ${playerCount.value + 1}`
     players.value.push({
       id: crypto.randomUUID(),
       name: name,
@@ -31,10 +31,19 @@ export const usePlayerStore = defineStore(storeId, () => {
     })
   }
 
+  const deletePlayer = (id: string) => {
+    const index = players.value.findIndex((p) => p.id === id)
+
+    if (index > -1) {
+      players.value.splice(index, 1)
+    }
+  }
+
   return {
     dungeonMaster,
     players,
     playerCount,
-    addPlayer
+    addPlayer,
+    deletePlayer
   }
 })
