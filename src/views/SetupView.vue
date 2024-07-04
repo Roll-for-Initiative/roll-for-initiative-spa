@@ -1,17 +1,13 @@
 <template>
   <main>
-    <h1>Add new players</h1>
+    <h1>Manage players</h1>
 
-    <div>
-      {{ playerStore.npc.name }}
-      {{ playerStore.npc.modifier }}
-    </div>
+    <h2>Dungeon Master</h2>
+    <PlayerCard :player="playerStore.dungeonMaster" />
 
-    <div>
-      <div v-for="player in playerStore.players" :key="player.id">
-        {{ player.name }}
-        {{ player.modifier }}
-      </div>
+    <h2>Players ({{ playerStore.playerCount }})</h2>
+    <div class="setup-view__cards">
+      <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
     </div>
 
     <button @click="handleAddPlayer">add player</button>
@@ -19,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+import PlayerCard from '../components/PlayerCard.vue'
 import { usePlayerStore } from '../stores/players'
 
 const playerStore = usePlayerStore()
@@ -31,3 +28,11 @@ playerStore.$subscribe((mutation, state) => {
   localStorage.setItem(mutation.storeId, JSON.stringify(state))
 })
 </script>
+
+<style lang="scss">
+.setup-view__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+</style>
