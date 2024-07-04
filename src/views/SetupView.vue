@@ -1,16 +1,32 @@
 <template>
-  <main>
-    <h1>Manage players</h1>
-
-    <h2>Dungeon Master</h2>
-    <PlayerCard :player="playerStore.dungeonMaster" />
-
-    <h2>Players ({{ playerStore.playerCount }})</h2>
-    <div class="setup-view__cards">
-      <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
+  <main class="container">
+    <div class="row">
+      <div class="col">
+        <h1>Manage players</h1>
+      </div>
     </div>
 
-    <button @click="handleAddPlayer">add player</button>
+    <div class="row">
+      <div class="col">
+        <h2>Dungeon Master</h2>
+        <PlayerCard :player="playerStore.dungeonMaster" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h2>Players ({{ playerStore.playerCount }})</h2>
+        <div class="setup-view__cards">
+          <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <button @click="handleAddPlayer">add player</button>
+      </div>
+    </div>
   </main>
 </template>
 
