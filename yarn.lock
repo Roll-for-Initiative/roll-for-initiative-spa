@@ -947,7 +947,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babylonjs@npm:^7.13.1":
+"babylonjs-gltf2interface@npm:^7.14.0":
+  version: 7.14.0
+  resolution: "babylonjs-gltf2interface@npm:7.14.0"
+  checksum: 10c0/7f60059f95b28e1347e479916b96ba35e8c41899bd7b838c833e31e4545cac2fa68b5b2e2558a12eef53a0873f4d751c7819859f0eda67e1d26667ecc0b6ab7b
+  languageName: node
+  linkType: hard
+
+"babylonjs-loaders@npm:^7.14.0":
+  version: 7.14.0
+  resolution: "babylonjs-loaders@npm:7.14.0"
+  dependencies:
+    babylonjs: "npm:^7.14.0"
+    babylonjs-gltf2interface: "npm:^7.14.0"
+  checksum: 10c0/0657c37e4ae455db52f991c45579b388cfc950708712440cea4ad36a8584e615d1de7f805de98a3c86aa7c67eb2f5239d145128f4c595e725805772c7e5b2c68
+  languageName: node
+  linkType: hard
+
+"babylonjs@npm:^7.13.1, babylonjs@npm:^7.14.0":
   version: 7.14.0
   resolution: "babylonjs@npm:7.14.0"
   checksum: 10c0/5afd86e33b0a18acd1f83deb3f99aa955765dde065f6f7c5cafeaf25b4d8b1248cff66359ae9362513d71db72f48886de7042ebe3ca10a03d82237f83a25138a
@@ -2595,6 +2612,7 @@ __metadata:
     "@vue/eslint-config-typescript": "npm:^13.0.0"
     "@vue/tsconfig": "npm:^0.5.1"
     babylonjs: "npm:^7.13.1"
+    babylonjs-loaders: "npm:^7.14.0"
     bootstrap: "npm:^5.3.3"
     eslint: "npm:^8.57.0"
     eslint-plugin-vue: "npm:^9.23.0"
