@@ -5,7 +5,7 @@ export default class Scene {
     engine: BABYLON.Engine
     scene: BABYLON.Scene
     canvas: HTMLCanvasElement
-    camera: BABYLON.FreeCamera
+    camera: BABYLON.ArcRotateCamera
     renderActions: Array<RenderAction>
 
     constructor(canvas: HTMLCanvasElement) {
@@ -19,11 +19,14 @@ export default class Scene {
         this.engine = new BABYLON.Engine(this.canvas, true, { preserveDrawingBuffer: true, stencil: true })
 
         this.scene = new BABYLON.Scene(this.engine)
-        this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 1)
+        this.scene.useRightHandedSystem = true
+        this.scene.clearColor = new BABYLON.Color4(.1, .1, .1, 1)
 
-        this.camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, 5, -10), this.scene)
+        this.camera = new BABYLON.ArcRotateCamera("Camera", 0, Math.PI, 10, new BABYLON.Vector3(0, 0, 0), this.scene) //new BABYLON.ArcRotateCamera('camera', new BABYLON.Vector3(0, 5, -10), this.scene)
         this.camera.setTarget(BABYLON.Vector3.Zero())
         this.camera.attachControl(this.canvas, false)
+        this.camera.position.y -= 4
+        this.camera.target = new BABYLON.Vector3(0,0,0)
         this.engine.runRenderLoop(this.render.bind(this))
 
         window.addEventListener('resize', this.onResize.bind(this))
@@ -38,6 +41,7 @@ export default class Scene {
     initExampleScene() {
         //Create a basic light, aiming 0, 1, 0 - meaning, to the sky
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), this.scene)
+        light.intensity = 2.4
         // Create a built-in "sphere" shape its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation
         // const sphere = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, this.scene, false, BABYLON.Mesh.FRONTSIDE)
         // // Move the sphere upward 1/2 of its height
