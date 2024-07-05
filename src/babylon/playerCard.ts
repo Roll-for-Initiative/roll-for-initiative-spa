@@ -51,7 +51,7 @@ export class PlayerCard {
             meta: modelImport.meshes[0].getChildMeshes(false, (mesh) => mesh.name === "meta")[0],
             picture: modelImport.meshes[0].getChildMeshes(false, (mesh) => mesh.name === "picture")[0]
         }
-
+        this.parts.initiative.visibility = 0
         const myMaterial = new BABYLON.StandardMaterial("myMaterial", this.scene);
 
         myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
@@ -60,9 +60,22 @@ export class PlayerCard {
 
         const myMaterial2 = new BABYLON.StandardMaterial("myMaterial2", this.scene);
 
-        myMaterial2.diffuseColor = new BABYLON.Color3(0, 0, 1);
+        myMaterial2.diffuseTexture = new BABYLON.Texture("http://localhost:5173/src/assets/models/textures/jelle.jpg", this.scene);
+
         this.parts.backdrop.material = myMaterial
         this.parts.picture.material = myMaterial2
+
+         //Create dynamic texture
+        const textureName = new BABYLON.DynamicTexture("dynamic texture", {width:512, height:256}, this.scene);   
+        
+        const materialName = new BABYLON.StandardMaterial("Mat", this.scene);    				
+        materialName.diffuseTexture = textureName;
+        const font = "bold 44px monospace";
+        textureName.drawText("Jelle buttcheeks", 75, 135, font, "green", "white", true, true);
+
+        this.parts.name.material = materialName
+        this.parts.name.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI, BABYLON.Space.LOCAL)
+
         modelImport.meshes[0].rotation.x = 180
         modelImport.meshes[0].rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.LOCAL)
         modelImport.meshes[0].rotate(new BABYLON.Vector3(0, 0, 1), 0, BABYLON.Space.LOCAL)
