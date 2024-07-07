@@ -1,18 +1,22 @@
 import * as BABYLON from 'babylonjs'
 import { RenderAction, type renderCallback } from './renderable'
 import { PlayerCard } from './playerCard'
+
+
 export default class Scene {
     engine: BABYLON.Engine
     scene: BABYLON.Scene
     canvas: HTMLCanvasElement
     camera: BABYLON.ArcRotateCamera
     renderActions: Array<RenderAction>
+    players: Array<PlayerCard>
+    cardParent: BABYLON.AbstractMesh
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
         this.renderActions = []
+        this.players = []
         this.init()
-        this.initExampleScene()
     }
 
     init() {
@@ -22,45 +26,80 @@ export default class Scene {
         this.scene.useRightHandedSystem = true
         this.scene.clearColor = new BABYLON.Color4(.1, .1, .1, 1)
 
-        this.camera = new BABYLON.ArcRotateCamera("Camera", 0, Math.PI, 10, new BABYLON.Vector3(0, 0, 0), this.scene) //new BABYLON.ArcRotateCamera('camera', new BABYLON.Vector3(0, 5, -10), this.scene)
+        this.camera = new BABYLON.ArcRotateCamera("Camera", 0, Math.PI / 2, 10, new BABYLON.Vector3(0, 0, 0), this.scene) //new BABYLON.ArcRotateCamera('camera', new BABYLON.Vector3(0, 5, -10), this.scene)
         this.camera.setTarget(BABYLON.Vector3.Zero())
         this.camera.attachControl(this.canvas, false)
         this.camera.position.y -= 4
-        this.camera.target = new BABYLON.Vector3(0,0,0)
+        this.camera.target = new BABYLON.Vector3(0, 0, 0)
         this.engine.runRenderLoop(this.render.bind(this))
 
-        window.addEventListener('resize', this.onResize.bind(this))
+        this.camera.lowerRadiusLimit = 6;
+        this.camera.upperRadiusLimit = 20;
+        this.camera.useFramingBehavior = true
+        if (this.camera.framingBehavior){
+            this.camera.framingBehavior.mode = BABYLON.FramingBehavior.FitFrustumSidesMode
+        }
 
-        this.renderCards()
-    }
-
-
-    /*
-        renders simple example scene
-    */
-    initExampleScene() {
-        //Create a basic light, aiming 0, 1, 0 - meaning, to the sky
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), this.scene)
         light.intensity = 2.4
-        // Create a built-in "sphere" shape its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation
-        // const sphere = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, this.scene, false, BABYLON.Mesh.FRONTSIDE)
-        // // Move the sphere upward 1/2 of its height
-        // sphere.position.y = 1
-        // // Create a built-in "ground" shape its constructor takes 6 params : name, width, height, subdivision, scene, updatable
-        // const ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, this.scene, false)
+
+        window.addEventListener('resize', this.onResize.bind(this))
+        this.readPlayersFromLocalStore()
     }
 
-    renderCards(){
-        const playerCard = new PlayerCard({
-            xPos:0,
-            yPos: 0,
-            name: "Jelle",
-            imgUrl: "/",
-            initiatve: 0,
-            scene: this.scene
-        })
+    async readPlayersFromLocalStore(){
+        const {dungeonMaster, players} = JSON.parse(localStorage.players)
+        const allPlayers = players.concat(dungeonMaster)           
+
+        this.cardParent = new BABYLON.Mesh("cardParent", this.scene)
+
+        for (const player of allPlayers) {
+            const playerCard = new PlayerCard({
+                xPos: this.players.length * -0.75 + +.5, //ugly fixed when model is less crappy
+                yPos: 0,
+                name: player.name,
+                imgUrl: player.imgUrl,
+                modifier: player.modifier,
+                scene: this.scene,
+                parent: this.cardParent,
+            })
+            await playerCard.loadModel()
+            this.players.push(playerCard)
+        }
+
+
+        this.updateBoundingBoxForMesh(this.cardParent)
+        this.cardParent._updateBoundingInfo()
+        this.camera.setTarget(this.cardParent)
+
+        this.revealCards()
     }
 
+    async revealCards(){
+        for(const player of this.players){
+            await player.reveal()
+        }
+    }
+
+    // async hideCards(){
+    //     for(const player of this.players){
+    //         await player.hide()
+    //     }
+    // }
+
+    updateBoundingBoxForMesh(mesh: BABYLON.AbstractMesh){
+        console.log(this.cardParent.getChildMeshes(true))
+        const children = mesh.getChildMeshes(false)
+            let boundingInfo = children[0].getBoundingInfo();
+            let min = boundingInfo.minimum.add(children[0].position);
+            let max = boundingInfo.maximum.add(children[0].position);
+            for (let i = 1; i < children.length; i++) {
+                boundingInfo = children[i].getBoundingInfo();
+                min = BABYLON.Vector3.Minimize(min, boundingInfo.minimum.add(children[i].position));
+                max = BABYLON.Vector3.Maximize(max, boundingInfo.maximum.add(children[i].position));
+            }
+            mesh.setBoundingInfo(new BABYLON.BoundingInfo(min, max));
+    }
 
     /*
        handle window resize event

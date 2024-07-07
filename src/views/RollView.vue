@@ -1,5 +1,6 @@
 <template>
   <main>
-    <h1>Roll for initiative!</h1>
+    <Scene></Scene>
   </main>
 </template>
+

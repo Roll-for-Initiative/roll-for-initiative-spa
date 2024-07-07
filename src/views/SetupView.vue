@@ -27,6 +27,14 @@
         <button @click="handleAddPlayer">add player</button>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="setup-view__actions">
+          <RouterLink class="router-link setup-view__actions-btn" to="/roll"><button>Roll For Iniative >>></button></RouterLink>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -51,4 +59,13 @@ playerStore.$subscribe((mutation, state) => {
   flex-wrap: wrap;
   gap: 1rem;
 }
+
+.setup-view__actions {
+  margin-top: 12px;
+}
+
+.setup-view__actions-btn {
+  outline: 1px solid #ff0000;
+}
+
 </style>

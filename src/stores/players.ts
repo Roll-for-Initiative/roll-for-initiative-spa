@@ -5,18 +5,22 @@ import { type Player } from '../types/player'
 
 const storeId = 'players'
 
+export type PlayerStore = ReturnType<typeof usePlayerStore>
+
 export const usePlayerStore = defineStore(storeId, () => {
   const dungeonMaster = ref<Player>({
     id: crypto.randomUUID(),
     name: 'Monsters',
-    modifier: 0
+    modifier: 0, 
+    imgUrl: ""
   })
 
   const players = ref<Player[]>([
     {
       id: crypto.randomUUID(),
       name: 'Player 1',
-      modifier: 0
+      modifier: 0, 
+      imgUrl: ""
     }
   ])
 
@@ -27,7 +31,8 @@ export const usePlayerStore = defineStore(storeId, () => {
     players.value.push({
       id: crypto.randomUUID(),
       name: name,
-      modifier: 0
+      modifier: 0,
+      imgUrl: ""
     })
   }
 
