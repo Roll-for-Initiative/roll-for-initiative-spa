@@ -24,18 +24,17 @@ export default class Scene {
 
         this.scene = new BABYLON.Scene(this.engine)
         this.scene.useRightHandedSystem = true
-        this.scene.clearColor = new BABYLON.Color4(.1, .1, .1, 1)
+        this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 1)
 
         this.camera = new BABYLON.ArcRotateCamera("Camera", 0, Math.PI / 2, 10, new BABYLON.Vector3(0, 0, 0), this.scene) //new BABYLON.ArcRotateCamera('camera', new BABYLON.Vector3(0, 5, -10), this.scene)
         this.camera.setTarget(BABYLON.Vector3.Zero())
         this.camera.attachControl(this.canvas, false)
         this.camera.position.y -= 4
         this.camera.target = new BABYLON.Vector3(0, 0, 0)
-        this.engine.runRenderLoop(this.render.bind(this))
-
         this.camera.lowerRadiusLimit = 6;
         this.camera.upperRadiusLimit = 20;
         this.camera.useFramingBehavior = true
+
         if (this.camera.framingBehavior){
             this.camera.framingBehavior.mode = BABYLON.FramingBehavior.FitFrustumSidesMode
         }
@@ -43,8 +42,17 @@ export default class Scene {
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), this.scene)
         light.intensity = 2.4
 
+        this.scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+
+        this.scene.fogColor = new BABYLON.Color3(1, 1, 1);
+        this.scene.fogDensity = 0.005;
+
         window.addEventListener('resize', this.onResize.bind(this))
+        
         this.readPlayersFromLocalStore()
+
+        this.engine.runRenderLoop(this.render.bind(this))
+
     }
 
     async readPlayersFromLocalStore(){
