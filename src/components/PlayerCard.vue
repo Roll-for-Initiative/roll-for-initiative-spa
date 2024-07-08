@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, watch } from 'vue'
 
 import { type Player } from '../types/player'
 import { usePlayerStore } from '@/stores/players'
@@ -23,12 +23,16 @@ const props = withDefaults(defineProps<Props>(), {
   enableDelete: true
 })
 
-const model = ref({
+const model = reactive({
   name: props.player.name,
   modifier: props.player.modifier
 })
 
 const playerStore = usePlayerStore()
+
+watch(model, (value) => {
+  playerStore.updatePlayer(props.player.id, value)
+})
 
 const handleDelete = () => {
   playerStore.deletePlayer(props.player.id)
