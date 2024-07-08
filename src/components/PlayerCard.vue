@@ -1,10 +1,7 @@
 <template>
   <div class="player-card">
-    <label :for="`name-${player.id}`">Name:</label>
-    <input v-model="name" :id="`name-${player.id}`" name="name" type="text" />
-
-    <label :for="`modifier-${player.id}`">Modifier:</label>
-    <input v-model="modifier" :id="`modifier-${player.id}`" name="modifier" type="number" />
+    <TextInput v-model="model.name" :id="player.id" name="name" />
+    <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
     <button class="w-100" v-if="enableDelete" @click="handleDelete">Delete player</button>
   </div>
 </template>
@@ -14,6 +11,8 @@ import { ref } from 'vue'
 
 import { type Player } from '../types/player'
 import { usePlayerStore } from '@/stores/players'
+import TextInput from './TextInput.vue'
+import NumberInput from './NumberInput.vue'
 
 interface Props {
   player: Player
@@ -24,8 +23,10 @@ const props = withDefaults(defineProps<Props>(), {
   enableDelete: true
 })
 
-const name = ref(props.player.name)
-const modifier = ref(props.player.modifier)
+const model = ref({
+  name: props.player.name,
+  modifier: props.player.modifier
+})
 
 const playerStore = usePlayerStore()
 

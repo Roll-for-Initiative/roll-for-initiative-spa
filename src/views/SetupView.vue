@@ -9,17 +9,26 @@
     <div class="row">
       <div class="col">
         <h2>Dungeon Master</h2>
-        <PlayerCard :player="playerStore.dungeonMaster" :enableDelete="false" />
       </div>
+    </div>
+
+    <div class="row">
+      <PlayerCard class="col-3" :player="playerStore.dungeonMaster" :enableDelete="false" />
     </div>
 
     <div class="row">
       <div class="col">
         <h2>Players ({{ playerStore.playerCount }})</h2>
-        <div class="setup-view__cards">
-          <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
-        </div>
       </div>
+    </div>
+
+    <div class="row">
+      <PlayerCard
+        class="col-3"
+        v-for="player in playerStore.players"
+        :player="player"
+        :key="player.id"
+      />
     </div>
 
     <div class="row">
@@ -31,7 +40,9 @@
     <div class="row">
       <div class="col">
         <div class="setup-view__actions">
-          <RouterLink class="router-link setup-view__actions-btn" to="/roll"><button>Roll For Iniative >>></button></RouterLink>
+          <RouterLink class="router-link setup-view__actions-btn" to="/roll">
+            <button>Roll For Iniative >>></button>
+          </RouterLink>
         </div>
       </div>
     </div>
@@ -54,12 +65,6 @@ playerStore.$subscribe((mutation, state) => {
 </script>
 
 <style lang="scss">
-.setup-view__cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 .setup-view__actions {
   margin-top: 12px;
 }
@@ -67,5 +72,4 @@ playerStore.$subscribe((mutation, state) => {
 .setup-view__actions-btn {
   outline: 1px solid #ff0000;
 }
-
 </style>
