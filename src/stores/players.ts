@@ -12,23 +12,19 @@ export const usePlayerStore = defineStore(storeId, () => {
     id: crypto.randomUUID(),
     name,
     modifier: 0,
-    imgUrl: ''
+    imgUrl: '',
+    rollResult: 0
   })
 
   const dungeonMaster = ref<Player>(generatePlayer('Monsters'))
-
   const players = ref<Player[]>([generatePlayer('Player 1')])
+  const results = ref<Player[]>([dungeonMaster.value, ...players.value])
 
   const playerCount = computed(() => players.value.length)
 
   const addPlayer = () => {
     const name = `Player ${playerCount.value + 1}`
-    players.value.push({
-      id: crypto.randomUUID(),
-      name: name,
-      modifier: 0,
-      imgUrl: ''
-    })
+    players.value.push(generatePlayer(name))
   }
 
   const deletePlayer = (id: string) => {
@@ -53,6 +49,43 @@ export const usePlayerStore = defineStore(storeId, () => {
     dungeonMaster.value.imgUrl = value.imgUrl
   }
 
+  const randomDice = (modifier: number, faceCount: number = 20): number =>
+    Math.floor(Math.random() * faceCount) + 1 + modifier
+
+  const roll = () => {
+    // group DM and players together
+    const allPlayers = [dungeonMaster.value, ...players.value]
+
+    // do initial round of rolls
+    allPlayers.forEach((player) => {
+      player.rollResult = randomDice(player.modifier)
+    })
+
+    // decide initial
+    allPlayers.sort((a, b) => b.rollResult - a.rollResult)
+
+    for (let i = 0; i < allPlayers.length - 1; i++) {
+      const playerA = allPlayers[i]
+      const playerB = allPlayers[i + 1]
+
+      // if two players rolled the same, reroll until unique results
+      if (playerA.rollResult === playerB.rollResult) {
+        while (playerA.rollResult === playerB.rollResult) {
+          playerA.rollResult = randomDice(playerA.modifier)
+          playerB.rollResult = randomDice(playerB.modifier)
+        }
+
+        // swap positions if player B has a higher roll
+        if (playerB.rollResult > playerA.rollResult) {
+          allPlayers[i] = playerB
+          allPlayers[i + 1] = playerA
+        }
+      }
+    }
+
+    results.value = allPlayers
+  }
+
   const clearPlayers = () => {
     players.value = [generatePlayer('Player 1')]
   }
@@ -70,6 +103,8 @@ export const usePlayerStore = defineStore(storeId, () => {
     deletePlayer,
     updatePlayer,
     updateDungeonMaster,
+    roll,
+    results,
     clearPlayers,
     clearAll
   }

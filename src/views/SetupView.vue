@@ -45,6 +45,13 @@
           <RouterLink class="router-link setup-view__actions-btn" to="/roll">
             <button>Roll For Iniative >>></button>
           </RouterLink>
+
+          <button @click="handleGenerate">Generate new order</button>
+          <ul>
+            <li v-for="player in playerStore.results" :key="player.id">
+              {{ player.name }}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -67,6 +74,10 @@ const handleClearAll = () => {
 
 const handleClearPlayers = () => {
   playerStore.clearPlayers()
+}
+
+const handleGenerate = () => {
+  playerStore.roll()
 }
 
 playerStore.$subscribe((mutation, state) => {
