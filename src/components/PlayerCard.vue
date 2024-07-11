@@ -2,7 +2,7 @@
   <div class="player-card">
     <TextInput v-model="model.name" :id="player.id" name="name" />
     <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
-    <button class="w-100" v-if="enableDelete" @click="handleDelete">Delete player</button>
+    <button class="w-100" v-if="!isDungeonMaster" @click="handleDelete">Delete player</button>
   </div>
 </template>
 
@@ -16,11 +16,11 @@ import NumberInput from './NumberInput.vue'
 
 interface Props {
   player: Player
-  enableDelete?: boolean
+  isDungeonMaster?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  enableDelete: true
+  isDungeonMaster: false
 })
 
 const model = reactive({
@@ -31,7 +31,11 @@ const model = reactive({
 const playerStore = usePlayerStore()
 
 watch(model, (value) => {
-  playerStore.updatePlayer(props.player.id, value)
+  if (props.isDungeonMaster) {
+    playerStore.updateDungeonMaster(value)
+  } else {
+    playerStore.updatePlayer(props.player.id, value)
+  }
 })
 
 const handleDelete = () => {

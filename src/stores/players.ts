@@ -52,12 +52,19 @@ export const usePlayerStore = defineStore(storeId, () => {
     players.value[index].imgUrl = value.imgUrl
   }
 
+  const updateDungeonMaster = (value: any) => {
+    dungeonMaster.value.name = value.name
+    dungeonMaster.value.modifier = value.modifier
+    dungeonMaster.value.imgUrl = value.imgUrl
+  }
+
   return {
     dungeonMaster,
     players,
     playerCount,
     addPlayer,
     deletePlayer,
-    updatePlayer
+    updatePlayer,
+    updateDungeonMaster
   }
 })

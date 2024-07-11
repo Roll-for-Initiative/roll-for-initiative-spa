@@ -13,7 +13,7 @@
     </div>
 
     <div class="row">
-      <PlayerCard class="col-3" :player="playerStore.dungeonMaster" :enableDelete="false" />
+      <PlayerCard class="col-3" :player="playerStore.dungeonMaster" isDungeonMaster />
     </div>
 
     <div class="row">
