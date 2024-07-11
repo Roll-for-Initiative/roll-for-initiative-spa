@@ -2,7 +2,14 @@
   <div class="player-card">
     <TextInput v-model="model.name" :id="player.id" name="name" />
     <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
-    <button class="w-100" v-if="!isDungeonMaster" @click="handleDelete">Delete player</button>
+
+    <button
+      class="w-100"
+      v-if="!isDungeonMaster && playerStore.playerCount > 1"
+      @click="handleDelete"
+    >
+      Delete player
+    </button>
   </div>
 </template>
 

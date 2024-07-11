@@ -8,21 +8,16 @@ const storeId = 'players'
 export type PlayerStore = ReturnType<typeof usePlayerStore>
 
 export const usePlayerStore = defineStore(storeId, () => {
-  const dungeonMaster = ref<Player>({
+  const generatePlayer = (name: string): Player => ({
     id: crypto.randomUUID(),
-    name: 'Monsters',
+    name,
     modifier: 0,
     imgUrl: ''
   })
 
-  const players = ref<Player[]>([
-    {
-      id: crypto.randomUUID(),
-      name: 'Player 1',
-      modifier: 0,
-      imgUrl: ''
-    }
-  ])
+  const dungeonMaster = ref<Player>(generatePlayer('Monsters'))
+
+  const players = ref<Player[]>([generatePlayer('Player 1')])
 
   const playerCount = computed(() => players.value.length)
 
@@ -58,6 +53,15 @@ export const usePlayerStore = defineStore(storeId, () => {
     dungeonMaster.value.imgUrl = value.imgUrl
   }
 
+  const clearPlayers = () => {
+    players.value = [generatePlayer('Player 1')]
+  }
+
+  const clearAll = () => {
+    dungeonMaster.value = generatePlayer('Monsters')
+    players.value = [generatePlayer('Player 1')]
+  }
+
   return {
     dungeonMaster,
     players,
@@ -65,6 +69,8 @@ export const usePlayerStore = defineStore(storeId, () => {
     addPlayer,
     deletePlayer,
     updatePlayer,
-    updateDungeonMaster
+    updateDungeonMaster,
+    clearPlayers,
+    clearAll
   }
 })

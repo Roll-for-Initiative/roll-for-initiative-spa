@@ -1,8 +1,9 @@
 <template>
   <main class="container">
     <div class="row">
-      <div class="col">
+      <div class="col d-flex justify-content-between align-items-center">
         <h1>Manage players</h1>
+        <button class="h-auto" @click="handleClearAll">Clear all</button>
       </div>
     </div>
 
@@ -17,8 +18,9 @@
     </div>
 
     <div class="row">
-      <div class="col">
+      <div class="col d-flex justify-content-between align-items-center">
         <h2>Players ({{ playerStore.playerCount }})</h2>
+        <button class="h-auto" @click="handleClearPlayers">Clear players</button>
       </div>
     </div>
 
@@ -57,6 +59,14 @@ const playerStore = usePlayerStore()
 
 const handleAddPlayer = () => {
   playerStore.addPlayer()
+}
+
+const handleClearAll = () => {
+  playerStore.clearAll()
+}
+
+const handleClearPlayers = () => {
+  playerStore.clearPlayers()
 }
 
 playerStore.$subscribe((mutation, state) => {
