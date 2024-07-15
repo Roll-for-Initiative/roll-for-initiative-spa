@@ -5,10 +5,8 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-  ],
-  base: './',
+  plugins: [vue()],
+  base: '/roll-for-initiative-spa/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
