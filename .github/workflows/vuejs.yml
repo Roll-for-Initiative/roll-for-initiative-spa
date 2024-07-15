@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -64,8 +66,6 @@ jobs:
           key: ${{ runner.os }}-vue-build-${{ hashFiles('dist') }}
           restore-keys: |
             ${{ runner.os }}-vue-build-
-      - name: Enable Corepack
-        run: corepacke enable
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Static HTML export with vue
