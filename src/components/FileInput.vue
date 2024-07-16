@@ -1,7 +1,14 @@
 <template>
   <div class="file-input">
     <label :for="idAttribute" class="file-input__label">Upload image</label>
-    <input :id="idAttribute" class="file-input__input" type="file" :name="name" />
+    <input
+      :id="idAttribute"
+      class="file-input__input"
+      type="file"
+      :name="name"
+      accept="image/png, image/jpeg"
+      @change="handleUpload"
+    />
   </div>
 </template>
 
@@ -13,8 +20,51 @@ interface Props {
   id: string
 }
 const props = defineProps<Props>()
+const model = defineModel<string>({ required: false })
 
 const idAttribute = computed(() => `${props.name}-${props.id}`)
+const image = new Image()
+
+const handleUpload = (event: any) => {
+  const file = event.target.files[0]
+
+  if (!file.type.match(/image.*/)) {
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (readerEvent: any) => {
+    image.onload = resizeImage
+    image.src = readerEvent.target.result
+  }
+
+  reader.readAsDataURL(file)
+}
+
+const resizeImage = () => {
+  // Resize the image
+  const canvas: any = document.createElement('canvas')
+  const max_size = 320
+  let width = image.width
+  let height = image.height
+
+  if (width > height) {
+    if (width > max_size) {
+      height *= max_size / width
+      width = max_size
+    }
+  } else {
+    if (height > max_size) {
+      width *= max_size / height
+      height = max_size
+    }
+  }
+  canvas.width = width
+  canvas.height = height
+  canvas.getContext('2d').drawImage(image, 0, 0, width, height)
+  const dataUrl = canvas.toDataURL('image/jpeg')
+  model.value = dataUrl
+}
 </script>
 
 <style lang="scss">

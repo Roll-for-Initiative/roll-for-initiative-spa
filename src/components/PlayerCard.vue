@@ -1,9 +1,9 @@
 <template>
   <div class="col-12 col-sm-4 col-lg-3">
-    <div class="player-card">
+    <div class="player-card" :style="{ 'background-image': `url(${player.imgUrl})` }">
       <TextInput v-model="model.name" :id="player.id" name="name" />
       <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
-      <FileInput :id="player.id" name="image" />
+      <FileInput v-model="model.imgUrl" :id="player.id" name="image" />
 
       <button
         class="w-100"
@@ -36,7 +36,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const model = reactive({
   name: props.player.name,
-  modifier: props.player.modifier
+  modifier: props.player.modifier,
+  imgUrl: props.player.imgUrl
 })
 
 const playerStore = usePlayerStore()
