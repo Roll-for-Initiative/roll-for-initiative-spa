@@ -52,7 +52,8 @@ const increment = () => {
 }
 
 .number-input__input {
-  flex: 1 1 auto;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 /* Chrome, Safari, Edge, Opera */

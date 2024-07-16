@@ -1,15 +1,17 @@
 <template>
-  <div class="player-card">
-    <TextInput v-model="model.name" :id="player.id" name="name" />
-    <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
+  <div class="col-12 col-sm-4 col-lg-3">
+    <div class="player-card">
+      <TextInput v-model="model.name" :id="player.id" name="name" />
+      <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
 
-    <button
-      class="w-100"
-      v-if="!isDungeonMaster && playerStore.playerCount > 1"
-      @click="handleDelete"
-    >
-      Delete player
-    </button>
+      <button
+        class="w-100"
+        v-if="!isDungeonMaster && playerStore.playerCount > 1"
+        @click="handleDelete"
+      >
+        Delete player
+      </button>
+    </div>
   </div>
 </template>
 
@@ -56,6 +58,8 @@ const handleDelete = () => {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  border: solid 2px black;
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 </style>

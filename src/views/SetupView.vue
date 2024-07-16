@@ -14,7 +14,7 @@
     </div>
 
     <div class="row">
-      <PlayerCard class="col-3" :player="playerStore.dungeonMaster" isDungeonMaster />
+      <PlayerCard :player="playerStore.dungeonMaster" isDungeonMaster />
     </div>
 
     <div class="row">
@@ -25,12 +25,7 @@
     </div>
 
     <div class="row">
-      <PlayerCard
-        class="col-3"
-        v-for="player in playerStore.players"
-        :player="player"
-        :key="player.id"
-      />
+      <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
     </div>
 
     <div class="row">
@@ -42,7 +37,7 @@
     <div class="row">
       <div class="col">
         <div class="setup-view__actions">
-          <RouterLink class="router-link setup-view__actions-btn" to="/roll">
+          <RouterLink class="router-link setup-view__actions-btn" to="/">
             <button>Roll For Iniative >>></button>
           </RouterLink>
         </div>
@@ -67,10 +62,6 @@ const handleClearAll = () => {
 
 const handleClearPlayers = () => {
   playerStore.clearPlayers()
-}
-
-const handleGenerate = () => {
-  playerStore.roll()
 }
 
 playerStore.$subscribe((mutation, state) => {
