@@ -13,7 +13,8 @@ export const usePlayerStore = defineStore(storeId, () => {
     name,
     modifier: 0,
     imgUrl: '',
-    rollResult: 0
+    roll: 0,
+    reroll: null
   })
 
   const dungeonMaster = ref<Player>(generatePlayer('Monsters'))
@@ -58,25 +59,26 @@ export const usePlayerStore = defineStore(storeId, () => {
 
     // do initial round of rolls
     allPlayers.forEach((player) => {
-      player.rollResult = randomDice(player.modifier)
+      player.reroll = null
+      player.roll = randomDice(player.modifier)
     })
 
     // decide initial
-    allPlayers.sort((a, b) => b.rollResult - a.rollResult)
+    allPlayers.sort((a, b) => b.roll - a.roll)
 
     for (let i = 0; i < allPlayers.length - 1; i++) {
       const playerA = allPlayers[i]
       const playerB = allPlayers[i + 1]
 
       // if two players rolled the same, reroll until unique results
-      if (playerA.rollResult === playerB.rollResult) {
-        while (playerA.rollResult === playerB.rollResult) {
-          playerA.rollResult = randomDice(playerA.modifier)
-          playerB.rollResult = randomDice(playerB.modifier)
+      if (playerA.roll === playerB.roll) {
+        while (playerA.reroll === playerB.reroll) {
+          playerA.reroll = randomDice(playerA.modifier)
+          playerB.reroll = randomDice(playerB.modifier)
         }
 
         // swap positions if player B has a higher roll
-        if (playerB.rollResult > playerA.rollResult) {
+        if (playerB.reroll! > playerA.reroll!) {
           allPlayers[i] = playerB
           allPlayers[i + 1] = playerA
         }

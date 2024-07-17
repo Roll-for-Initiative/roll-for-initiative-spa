@@ -3,5 +3,6 @@ export interface Player {
   name: string
   modifier: number
   imgUrl: string //should be base64 encoded image later
-  rollResult: number
+  roll: number
+  reroll?: number | null
 }
