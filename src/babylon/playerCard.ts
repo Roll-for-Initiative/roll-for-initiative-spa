@@ -74,7 +74,7 @@ export class PlayerCard {
        
         // Load material from node material editor
 
-        const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync("IG38UL#20", this.scene)
+        const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync("IG38UL#15", this.scene)
 
         const textureBlock = nm.getBlockByPredicate(input => input.name === "picture") as BABYLON.TextureBlock;
         const interval = setInterval(()=>{
