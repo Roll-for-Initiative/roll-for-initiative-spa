@@ -1,6 +1,3 @@
 <template>
-  <main>
-    <Scene></Scene>
-  </main>
+  <Scene></Scene>
 </template>
-
