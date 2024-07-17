@@ -1,21 +1,16 @@
 <template>
-  <header class="nav">
-    <nav class="container">
-      <div class="row">
-        <div class="col-12 d-flex flex-row gap-2">
-          <RouterLink class="router-link nav__item" to="/">Roll</RouterLink>
-          <RouterLink class="router-link nav__item" to="/setup">Setup</RouterLink>
-        </div>
-      </div>
-    </nav>
-  </header>
+  <main>
+    <RouterView />
+  </main>
 
-  <RouterView />
+  <Navigation />
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+
 import { usePlayerStore } from './stores/players'
+import Navigation from './components/Navigation.vue'
 
 const playerStore = usePlayerStore()
 
@@ -32,10 +27,7 @@ loadStateFromLocalStorage()
 </script>
 
 <style>
-.nav {
-  background-color: #000000;
-}
-.nav__item {
-  color: yellow;
+main {
+  min-height: calc(100vh - 24px);
 }
 </style>

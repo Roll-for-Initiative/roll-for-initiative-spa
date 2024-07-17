@@ -21,13 +21,13 @@ onMounted(() => {
 
 <style>
 .scene {
-  height: 100%;
-  width: 100vw;
+  width: 100%;
+  height: calc(100vh - 24px);
 }
 
 .scene__render-target {
-  height: 100%;
   width: 100%;
+  height: 100%;
 
   -webkit-touch-callout: none;
   -webkit-user-select: none;

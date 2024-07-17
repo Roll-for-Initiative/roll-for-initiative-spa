@@ -80,6 +80,7 @@ const resizeImage = () => {
   width: 100%;
   text-align: center;
   padding: 1px 6px;
+  background-color: white;
   border: solid 2px black;
   cursor: pointer;
 }
