@@ -41,7 +41,7 @@ export default class Scene {
     ) //new BABYLON.ArcRotateCamera('camera', new BABYLON.Vector3(0, 5, -10), this.scene)
     this.camera.setTarget(BABYLON.Vector3.Zero())
     this.camera.attachControl(this.canvas, false)
-    this.camera.position.y -= 4
+    this.camera.position.y -= 0
     this.camera.target = new BABYLON.Vector3(0, 0, 0)
     this.camera.lowerRadiusLimit = 6
     this.camera.upperRadiusLimit = 20
@@ -64,7 +64,15 @@ export default class Scene {
     this.readPlayersFromLocalStore()
 
     this.engine.runRenderLoop(this.render.bind(this))
+
+    const rotState = { x: this.camera.alpha, y: this.camera.beta }
+    this.scene.registerBeforeRender(() => {
+      this.camera.alpha = rotState.x;
+      this.camera.beta = rotState.y;
+    })
+
   }
+
 
   async readPlayersFromLocalStore() {
     // const { dungeonMaster, players } = JSON.parse(localStorage.players)
@@ -134,8 +142,12 @@ export default class Scene {
     */
   render() {
     this.scene.render()
-    this.renderActions.forEach((action: RenderAction) => action.render('add timestmap'))
+    this.renderActions.forEach((action: RenderAction) => action.render("add timestmap"))
+    for (const player of this.players){
+      player.idleLerp()
+    }
   }
+
 
   /*
         register a function to the render loop and order accordingly
