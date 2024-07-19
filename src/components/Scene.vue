@@ -23,7 +23,7 @@ onMounted(() => {
 .scene {
   width: 100%;
   height: calc(100vh - 24px);
-  background-image: url('./1280x960-terrain-wa.avif');
+  background-image: url('@/assets/models/1280x960-terrain-wa.avif');
   background-size: cover;
 }
 
