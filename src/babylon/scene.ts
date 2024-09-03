@@ -29,20 +29,20 @@ export default class Scene {
 
     this.scene = new BABYLON.Scene(this.engine)
     this.scene.useRightHandedSystem = true
-    this.scene.clearColor = new BABYLON.Color4(0,0, 0, 0)
+    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
+
     this.camera = new BABYLON.ArcRotateCamera(
       'Camera',
       0,
       Math.PI / 2,
       10,
-      new BABYLON.Vector3(0, 0,-3),
+      new BABYLON.Vector3(0, 0, -3),
       this.scene
-    ) //new BABYLON.ArcRotateCamera('camera', new BABYLON.Vector3(0, 5, -10), this.scene)
+    )
+
     this.camera.setTarget(BABYLON.Vector3.Zero())
     this.camera.attachControl(this.canvas, false)
 
-    // this.camera.lowerRadiusLimit = 6
-    // this.camera.upperRadiusLimit = 20
     this.camera.useFramingBehavior = true
 
     if (this.camera.framingBehavior) {
@@ -68,30 +68,25 @@ export default class Scene {
     //   this.camera.alpha = rotState.x;
     //   this.camera.beta = rotState.y;
     // })
-
   }
 
-
   async readPlayersFromLocalStore() {
-    // const { dungeonMaster, players } = JSON.parse(localStorage.players)
     this.store.roll()
     const allPlayers = this.store.results
 
     this.cardParent = new BABYLON.Mesh('cardParent', this.scene)
-    let idx = 1
     for (const player of allPlayers) {
       const playerCard = new PlayerCard({
-        xPos: this.players.length * -0.75 + +0.5, //ugly fixed when model is less crappy
+        xPos: this.players.length * -0.75 + +0.5,
         yPos: 0,
         name: player.name,
         imgUrl: player.imgUrl,
-        modifier: idx,
+        modifier: allPlayers.indexOf(player) + 1,
         scene: this.scene,
         parent: this.cardParent
       })
       await playerCard.loadModel()
       this.players.push(playerCard)
-      idx ++
     }
 
     this.updateBoundingBoxForMesh(this.cardParent)
@@ -106,12 +101,6 @@ export default class Scene {
       await player.reveal()
     }
   }
-
-  // async hideCards(){
-  //     for(const player of this.players){
-  //         await player.hide()
-  //     }
-  // }
 
   updateBoundingBoxForMesh(mesh: BABYLON.AbstractMesh) {
     console.log(this.cardParent.getChildMeshes(true))
@@ -141,12 +130,11 @@ export default class Scene {
     */
   render() {
     this.scene.render()
-    this.renderActions.forEach((action: RenderAction) => action.render("add timestmap"))
-    for (const player of this.players){
+    this.renderActions.forEach((action: RenderAction) => action.render('add timestmap'))
+    for (const player of this.players) {
       player.idleLerp()
     }
   }
-
 
   /*
         register a function to the render loop and order accordingly

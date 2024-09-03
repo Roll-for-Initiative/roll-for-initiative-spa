@@ -46,6 +46,7 @@ export class PlayerCard {
 
   async loadModel() {
     const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/card6.glb', '', this.scene)
+    this.mainMesh = model.meshes[0]
 
     this.parts = {
       backdrop: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'background')[0],
@@ -55,22 +56,54 @@ export class PlayerCard {
       picture: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'picture')[0]
     }
 
-    this.mainMesh = model.meshes[0]
     this.mainMesh.rotation = new BABYLON.Vector3(Math.PI / 2, -Math.PI / 2, 0)
     this.parent.addChild(model.meshes[0])
     model.meshes[0].position._z = this.xPos * 5
-    // this.parts.initiative.visibility = 0
+    
+    this.startPos = this.mainMesh.position
+    const moveDistance = new BABYLON.Vector3(0, 2.5, 0)
 
-    // const backdropMaterial = new BABYLON.StandardMaterial("backdropMaterial", this.scene);
-    // backdropMaterial.diffuseTexture = new BABYLON.Texture("models/textures/wood.jpg", this.scene);
-    // backdropMaterial.diffuseColor = BABYLON.Color3.FromHexString("#954535");
+    this.endPos = this.mainMesh.position.add(BABYLON.Vector3.Up().multiply(moveDistance))
 
-    // this.parts.backdrop.material = backdropMaterial
+    this.dir = 1
+    this.speed = Math.random()
 
-    // Load material from node material editor
+    this.setMaterials()
+  }
 
-    const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync('IG38UL#21', this.scene)
+  setMaterials(){
+    this.setPictureMaterial()
+    this.setDynamicTexture(this.parts.name, "name_texture", this.name)
+    this.setDynamicTexture(this.parts.meta, "initiave_texture", this.modifier.toString())
+  }
 
+  setDynamicTexture(part: BABYLON.AbstractMesh, name: string,text: string ){
+    const font = '82px RuneScape Chat'
+    const textureName = new BABYLON.DynamicTexture(
+      'nameTexture',
+      { width: 400, height: 100 },
+      this.scene
+    )
+    const materialName = new BABYLON.StandardMaterial(name, this.scene)
+    materialName.diffuseTexture = textureName
+    textureName.drawText(text, 40, 80, font, 'yellow', '#0101', false, true)
+    part.material = materialName
+  }
+
+  async setPictureMaterial(){
+    const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync('M49UMU#9', this.scene)
+    nm.getInputBlocks().forEach((e)=>{
+      if (e.name === "offsets"){
+        e.value._x = 1 + (Math.random() * 0.25)
+        e.value._y = 1 + (Math.random() * 0.25)
+        e.value._z = 1 +  (Math.random() * 0.25)
+      }
+
+      if (e.name === "sheen"){
+        e.value = 0.2 + (1 - Math.random())
+      }
+    })
+    
     const textureBlock = nm.getBlockByPredicate(
       (input) => input.name === 'picture'
     ) as BABYLON.TextureBlock
@@ -90,40 +123,6 @@ export class PlayerCard {
     }, 200)
 
     this.parts.picture.material = nm
-
-    const font = '82px RuneScape Chat'
-    const textureName = new BABYLON.DynamicTexture(
-      'nameTexture',
-      { width: 400, height: 100 },
-      this.scene
-    )
-    const materialName = new BABYLON.StandardMaterial('nameMaterial', this.scene)
-    materialName.diffuseTexture = textureName
-    textureName.drawText(this.name, 40, 80, font, 'yellow', '#0101', false, true)
-    this.parts.name.material = materialName
-
-    const textureInitiative = new BABYLON.DynamicTexture(
-      'initiativeTexture',
-      { width: 400, height: 100 },
-      this.scene
-    )
-    const materialInitiative = new BABYLON.StandardMaterial('initiativeMaterial', this.scene)
-    materialInitiative.diffuseTexture = textureInitiative
-    textureInitiative.drawText(`${this.modifier}`, 160, 80, font, 'yellow', '#0101', false, true)
-    this.parts.meta.material = materialInitiative
-
-    // model.meshes[0].rotate(new BABYLON.Vector3(1, 0, 0), Math.PI / 2, BABYLON.Space.WORLD)
-    // model.meshes[0].rotate(new BABYLON.Vector3(0, 0, 1), -Math.PI / 2, BABYLON.Space.LOCAL)
-    // model.meshes[0].rotate(new BABYLON.Vector3(0, 1, 0), -Math.PI, BABYLON.Space.WORLD)
-
-    this.startPos = this.mainMesh.position
-    const moveDistance = new BABYLON.Vector3(0, 2.5, 0)
-
-    this.endPos = this.mainMesh.position.add(BABYLON.Vector3.Up().multiply(moveDistance))
-
-    this.dir = 1
-    this.speed = Math.random()
-    // this.mainMesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_Y;
   }
 
   idleLerp() {
@@ -131,6 +130,7 @@ export class PlayerCard {
     t = Math.sin(t * Math.PI * 0.5)
     this.mainMesh.position = BABYLON.Vector3.Lerp(this.startPos, this.endPos, t)
   }
+  
 
   async reveal() {
     return await animationAsync((resolver) => {
