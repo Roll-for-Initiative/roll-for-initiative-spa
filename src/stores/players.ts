@@ -17,11 +17,15 @@ export const usePlayerStore = defineStore(storeId, () => {
     reroll: null
   })
 
+  const modalIsOpen = ref<boolean>(false)
   const dungeonMaster = ref<Player>(generatePlayer('Monsters'))
   const players = ref<Player[]>([generatePlayer('Player 1')])
   const results = ref<Player[]>([dungeonMaster.value, ...players.value])
 
   const playerCount = computed(() => players.value.length)
+
+  const showModal = () => (modalIsOpen.value = true)
+  const closeModal = () => (modalIsOpen.value = false)
 
   const addPlayer = () => {
     const name = `Player ${playerCount.value + 1}`
@@ -98,6 +102,9 @@ export const usePlayerStore = defineStore(storeId, () => {
   }
 
   return {
+    modalIsOpen,
+    showModal,
+    closeModal,
     dungeonMaster,
     players,
     playerCount,

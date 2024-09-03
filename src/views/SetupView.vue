@@ -37,9 +37,7 @@
     <div class="row">
       <div class="col">
         <div class="setup-view__actions">
-          <RouterLink class="router-link setup-view__actions-btn" to="/">
-            <button>Roll For Iniative >>></button>
-          </RouterLink>
+          <button class="setup-view__actions-btn">Roll For Iniative >>></button>
         </div>
       </div>
     </div>

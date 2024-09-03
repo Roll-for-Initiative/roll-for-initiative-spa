@@ -14,15 +14,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="scene">
+  <main class="scene">
     <canvas ref="canvasRef" class="scene__render-target"></canvas>
-  </div>
+  </main>
 </template>
 
 <style>
 .scene {
   width: 100%;
-  height: calc(100vh - 24px);
+  height: 100vh;
   background-image: url('@/assets/models/1280x960-terrain-wa.avif');
   background-size: cover;
 }

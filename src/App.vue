@@ -1,15 +1,15 @@
 <template>
-  <main>
-    <RouterView />
-  </main>
-
+  <Scene></Scene>
   <Navigation />
+  <Modal>
+    <SetupView />
+  </Modal>
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-
 import { usePlayerStore } from './stores/players'
+import Modal from './components/Modal.vue'
+import SetupView from './views/SetupView.vue'
 import Navigation from './components/Navigation.vue'
 
 const playerStore = usePlayerStore()
@@ -28,6 +28,6 @@ loadStateFromLocalStorage()
 
 <style>
 main {
-  min-height: calc(100vh - 24px);
+  min-height: 100vh;
 }
 </style>

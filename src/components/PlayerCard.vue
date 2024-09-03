@@ -6,7 +6,7 @@
       <FileInput v-model="model.imgUrl" :id="player.id" name="image" />
 
       <button
-        class="w-100"
+        class="w-100 player-card__delete"
         v-if="!isDungeonMaster && playerStore.playerCount > 1"
         @click="handleDelete"
       >
@@ -56,6 +56,8 @@ const handleDelete = () => {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins' as *;
+
 .player-card {
   display: flex;
   flex-direction: column;
@@ -64,5 +66,9 @@ const handleDelete = () => {
   border: solid 2px black;
   padding: 0.5rem;
   margin-bottom: 1.5rem;
+}
+
+.player-card__delete {
+  @include button;
 }
 </style>

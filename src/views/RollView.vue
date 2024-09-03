@@ -1,3 +1,0 @@
-<template>
-  <Scene></Scene>
-</template>

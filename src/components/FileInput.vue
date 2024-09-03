@@ -68,6 +68,8 @@ const resizeImage = () => {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins' as *;
+
 .file-input {
   width: 100%;
 }
@@ -77,11 +79,7 @@ const resizeImage = () => {
 }
 
 .file-input__label {
+  @include button;
   width: 100%;
-  text-align: center;
-  padding: 1px 6px;
-  background-color: white;
-  border: solid 2px black;
-  cursor: pointer;
 }
 </style>
