@@ -1,17 +1,17 @@
 <template>
   <div class="col-12 col-sm-4 col-lg-3">
     <div class="player-card" :style="{ 'background-image': `url(${player.imgUrl})` }">
-      <TextInput v-model="model.name" :id="player.id" name="name" />
-      <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
-      <FileInput v-model="model.imgUrl" :id="player.id" name="image" />
-
       <button
-        class="w-100 player-card__delete"
+        class="player-card__delete"
         v-if="!isDungeonMaster && playerStore.playerCount > 1"
         @click="handleDelete"
       >
-        Delete player
+        x
       </button>
+
+      <TextInput v-model="model.name" :id="player.id" name="name" />
+      <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
+      <FileInput v-model="model.imgUrl" :id="player.id" name="image" />
     </div>
   </div>
 </template>
@@ -70,5 +70,6 @@ const handleDelete = () => {
 
 .player-card__delete {
   @include button;
+  align-self: flex-end;
 }
 </style>

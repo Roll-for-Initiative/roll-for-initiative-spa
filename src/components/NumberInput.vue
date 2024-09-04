@@ -1,6 +1,5 @@
 <template>
   <div class="number-input">
-    <label class="number-input__label" :for="idAttribute">{{ name }}:</label>
     <button class="number-input__button" @click="decrement">-</button>
     <input
       class="number-input__input"
@@ -8,6 +7,7 @@
       :id="idAttribute"
       :name="name"
       type="number"
+      :aria-label="name"
     />
     <button class="number-input__button" @click="increment">+</button>
   </div>
@@ -39,23 +39,26 @@ const increment = () => {
 
 .number-input {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.5rem;
+  width: 100%;
 }
 
-.number-input__label,
 .number-input__input {
   display: block;
-}
-
-.number-input__label {
-  flex: 1 1 100%;
-  text-transform: capitalize;
-}
-
-.number-input__input {
   flex: 1 1 0;
   min-width: 0;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: var(--bs-yellow);
+  font-size: 1.625rem;
+  line-height: 1;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .number-input__button {

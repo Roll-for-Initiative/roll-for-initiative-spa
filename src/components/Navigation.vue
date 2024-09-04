@@ -3,8 +3,14 @@
     <div class="container">
       <div class="row">
         <div class="col-12 d-flex flex-row gap-3 justify-content-center">
-          <button @click="showPlayerModal" @keydown.p="showPlayerModal">Edit players</button>
-          <button @click="roll" @keydown.r="roll">Reroll</button>
+          <button
+            v-if="!playerStore.modalIsOpen"
+            @click="showPlayerModal"
+            @keydown.p="showPlayerModal"
+          >
+            Edit players
+          </button>
+          <button @click="roll" @keydown.r="roll">Roll for initiative</button>
         </div>
       </div>
     </div>
@@ -27,8 +33,9 @@ const showPlayerModal = () => {
 
 <style lang="scss">
 .nav {
-  position: absolute;
+  position: fixed;
   width: 100%;
   bottom: 0;
+  z-index: 100;
 }
 </style>

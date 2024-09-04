@@ -2,43 +2,15 @@
   <div class="container">
     <div class="row">
       <div class="col d-flex justify-content-between align-items-center">
-        <h1>Manage players</h1>
+        <h1>Heroes & Allies</h1>
         <button class="h-auto" @click="handleClearAll">Clear all</button>
       </div>
     </div>
 
     <div class="row">
-      <div class="col">
-        <h2>Dungeon Master</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <PlayerCard :player="playerStore.dungeonMaster" isDungeonMaster />
-    </div>
-
-    <div class="row">
-      <div class="col d-flex justify-content-between align-items-center">
-        <h2>Players ({{ playerStore.playerCount }})</h2>
-        <button class="h-auto" @click="handleClearPlayers">Clear players</button>
-      </div>
-    </div>
-
-    <div class="row">
       <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
-    </div>
-
-    <div class="row">
       <div class="col">
-        <button @click="handleAddPlayer">add player</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <div class="setup-view__actions">
-          <button class="setup-view__actions-btn">Roll For Iniative >>></button>
-        </div>
+        <button @click="handleAddPlayer">Add player</button>
       </div>
     </div>
   </div>
