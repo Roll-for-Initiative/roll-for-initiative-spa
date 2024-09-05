@@ -1,13 +1,8 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col d-flex justify-content-between align-items-center">
-        <h1>Heroes & Allies</h1>
-        <button class="h-auto" @click="handleClearAll">Clear all</button>
-      </div>
-    </div>
+    <h1 class="setup-view__title display-2">Heroes & Allies</h1>
 
-    <div class="row">
+    <div class="row setup-view__cards position-relative z-10">
       <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
       <div class="col">
         <button @click="handleAddPlayer">Add player</button>
@@ -40,6 +35,18 @@ playerStore.$subscribe((mutation, state) => {
 </script>
 
 <style lang="scss">
+.setup-view__title {
+  width: 100%;
+  position: absolute;
+  color: var(--rfi-gray-600);
+  top: 1.5rem;
+  z-index: 0;
+}
+
+.setup-view__cards {
+  margin-top: 6.5rem;
+}
+
 .setup-view__actions {
   margin-top: 12px;
 }

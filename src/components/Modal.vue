@@ -27,7 +27,7 @@ onUpdated(() => {
 @use '@/assets/scss/variables' as *;
 
 dialog {
-  background-color: var(--bs-body-bg);
+  background-color: var(--rfi-body-bg);
   top: 0;
   bottom: 0;
   left: 0;

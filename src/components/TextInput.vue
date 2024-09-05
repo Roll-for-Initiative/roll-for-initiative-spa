@@ -31,7 +31,7 @@ const idAttribute = computed(() => `${props.name}-${props.id}`)
   font-size: 32px;
   line-height: 1;
 
-  border: solid 1px var(--bs-yellow);
+  border: solid 1px var(--rfi-yellow);
   box-shadow: inset -2px 2px 0 #000;
 
   &:focus {

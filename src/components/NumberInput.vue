@@ -52,7 +52,7 @@ const increment = () => {
   background-color: transparent;
   border: none;
   padding: 0;
-  color: var(--bs-yellow);
+  color: var(--rfi-yellow);
   font-size: 1.625rem;
   line-height: 1;
 
