@@ -19,6 +19,7 @@ withDefaults(defineProps<Props>(), {
   grid-column: span 3;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: flex-start;
   gap: 0.5rem;
   border: solid 4px #000;

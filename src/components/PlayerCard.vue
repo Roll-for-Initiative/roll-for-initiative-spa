@@ -60,5 +60,6 @@ const handleDelete = () => {
 .player-card__delete {
   @include button;
   align-self: flex-end;
+  margin-bottom: auto;
 }
 </style>

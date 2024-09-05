@@ -1,6 +1,6 @@
 <template>
   <div class="file-input">
-    <label :for="idAttribute" class="file-input__label">Upload image</label>
+    <label :for="idAttribute" class="file-input__label">{{ buttonText }}</label>
     <input
       :id="idAttribute"
       class="file-input__input"
@@ -24,6 +24,8 @@ const model = defineModel<string>({ required: false })
 
 const idAttribute = computed(() => `${props.name}-${props.id}`)
 const image = new Image()
+
+const buttonText = computed(() => (model.value ? 'Remove artwork' : 'Add artwork'))
 
 const handleUpload = (event: any) => {
   const file = event.target.files[0]
