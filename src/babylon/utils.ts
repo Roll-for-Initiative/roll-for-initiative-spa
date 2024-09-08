@@ -31,3 +31,6 @@ export const animationAsync = async (animationCallback: AnimationAsync) => {
 }
 
 
+export const degToRad = (degrees: number) => {
+    return degrees * (Math.PI / 180);
+}

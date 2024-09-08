@@ -11,6 +11,11 @@ type PlayerData = {
   scene: BABYLON.Scene
   parent: BABYLON.AbstractMesh
   mainMesh?: BABYLON.AbstractMesh
+  cardInfo: {
+    cardOrigin: BABYLON.Vector3,
+    cardAngle: number,
+    index: number
+  }
 }
 
 type cardParts = {
@@ -39,13 +44,26 @@ export class PlayerCard {
   speed: number
   startPos: BABYLON.Vector3
   endPos: BABYLON.Vector3
+  cardInfo: {
+    cardPosition:number
+    cardOrigin: BABYLON.Vector3,
+    cardAngle: number,
+    index: number
+  }
+  cardInfoInitalCard: {
+    cardPosition:number
+    cardOrigin: BABYLON.Vector3,
+    cardAngle: number,
+    index: number
+  }
 
   constructor(playerData: PlayerData) {
     Object.assign(this, playerData)
   }
 
   async loadModel() {
-    const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/card6.glb', '', this.scene)
+    const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/card9.glb', '', this.scene)
+    console.log(model)
     this.mainMesh = model.meshes[0]
 
     this.parts = {
@@ -56,17 +74,25 @@ export class PlayerCard {
       picture: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'picture')[0]
     }
 
-    this.mainMesh.rotation = new BABYLON.Vector3(Math.PI / 2, -Math.PI / 2, 0)
     this.parent.addChild(model.meshes[0])
-    model.meshes[0].position._z = this.xPos * 5
+   
     
-    this.startPos = this.mainMesh.position
-    const moveDistance = new BABYLON.Vector3(0, 2.5, 0)
+    
+    this.startPos = BABYLON.Vector3.Zero()
+    this.endPos =new BABYLON.Vector3(0,0,this.cardInfo.cardPosition)
 
-    this.endPos = this.mainMesh.position.add(BABYLON.Vector3.Up().multiply(moveDistance))
+    this.startRot = BABYLON.Vector3.Zero()
+    this.endRot = BABYLON.Vector3.Zero()
 
+    model.meshes[0].position._z = this.xPos
     this.dir = 1
     this.speed = Math.random()
+    // this.mainMesh.rotation = new BABYLON.Vector3(-Math.PI / 2, Math.PI / 2, 0)
+    model.meshes[0].rotateAround(model.meshes[0].position, BABYLON.Axis.X, this.cardInfo.cardAngle)
+
+ 
+
+    model.meshes[0].position._x =  (this.cardInfo.index )
 
     this.setMaterials()
   }
