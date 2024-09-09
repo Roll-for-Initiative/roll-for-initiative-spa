@@ -4,6 +4,7 @@ import { PlayerCard } from './playerCard'
 import type { PlayerStore } from '@/stores/players'
 import { degToRad } from './utils'
 import Brazier from './brazier'
+import { CardsFan } from './cardsFan'
 
 export default class Scene {
   engine: BABYLON.Engine
@@ -15,6 +16,7 @@ export default class Scene {
   cardParent: BABYLON.AbstractMesh
   store: PlayerStore
   backgroundCamera: BABYLON.ArcRotateCamera
+  fan: CardsFan
 
   constructor(canvas: HTMLCanvasElement, store: PlayerStore) {
     this.canvas = canvas
@@ -38,8 +40,8 @@ export default class Scene {
       'Camera',
       0,
       Math.PI / 2,
-      10,
-      new BABYLON.Vector3(0, 0, -3),
+      20,
+      new BABYLON.Vector3(0, 0, 0),
       this.scene
     )
 
@@ -86,74 +88,21 @@ export default class Scene {
     groundMat.roughness = 1
     ground.material = groundMat
     
-    new Brazier(this.scene, new BABYLON.Vector3(0,0,-10))
-    new Brazier(this.scene, new BABYLON.Vector3(0,0,10))
+    new Brazier(this.scene, new BABYLON.Vector3(3,-5,-10))
+    new Brazier(this.scene, new BABYLON.Vector3(3,-5,10))
    
   }
 
   async readPlayersFromLocalStore() {
     this.store.roll()
     const allPlayers = this.store.results
+   this.fan = new CardsFan(this.scene, allPlayers)
+    this.fan.init()
+    this.camera.setTarget(this.fan.body.position.subtract(new BABYLON.Vector3(0,0,-0)) )
 
-    this.cardParent = new BABYLON.Mesh('cardParent', this.scene)
-    // const range = degToRad(140)
-    // const initialAngle  = degToRad(110)
-
-    const calcAlignment = async (cardIndex, cardCount, player) => {
-      const maxRotation = degToRad(45); //The absolute value of the rotation for the leftmost and rightmost cards (in degrees)
-      const xOffset = 0; //The horizontal center of the card fan (in worldspace units)
-      const xRange = 3; //The horizontal range of the card fan (in worldspace units)
-
-      let alignResult = 0.5;
-      if (cardCount >= 2) alignResult = cardIndex / (cardCount - 1.0);
-      const rotZ = BABYLON.Scalar.Lerp(-maxRotation, maxRotation, alignResult);
-      const xPos = BABYLON.Scalar.Lerp(xOffset - xRange, xOffset + xRange, alignResult);
-
-      if (alignResult > 0.5) alignResult = 1 - alignResult;
-      alignResult *= 2;
-      
-      return {
-        cardAngle: rotZ,
-        cardPos: xPos,
-        cardOrigin: new BABYLON.Vector3(0, 0, 0),
-        index: cardIndex
-      }
-
-    }
-
-    let initialCardInfo = null
-
-    for (let i = 0; i < allPlayers.length -1 ; i++) {
-      const cardInfo = await calcAlignment(i, allPlayers.length-1,allPlayers[i])
-      if (!origin) {
-        initialCardInfo = cardInfo
-      }
-      
-      this.createCard(allPlayers[i],i+ 1,cardInfo, origin)
-    }
   }
 
-  async createCard( player, initiative, cardInfo: {cardPos, cardAngle, cardOrigin, cardIndex}, startInfo) {
-    const playerCard = new PlayerCard({
-      xPos: cardInfo.cardPos * (8 * 0.25),
-      yPos: 0,
-      name: player.name,
-      imgUrl: player.imgUrl,
-      modifier: initiative,//allPlayers.indexOf(player) + 1,
-      scene: this.scene,
-      parent: this.cardParent,
-      cardInfo: cardInfo,
-      startInfo:startInfo
-    })
-    await playerCard.loadModel()
-    this.players.push(playerCard)
-  }
 
-  async revealCards() {
-    for (const player of this.players) {
-      await player.reveal()
-    }
-  }
 
   updateBoundingBoxForMesh(mesh: BABYLON.AbstractMesh) {
     console.log(this.cardParent.getChildMeshes(true))
@@ -184,8 +133,8 @@ export default class Scene {
   render() {
     this.scene.render()
     this.renderActions.forEach((action: RenderAction) => action.render('add timestmap'))
-    for (const player of this.players) {
-      // player.idleLerp()
+    if (this.fan){
+      this.fan.update()
     }
   }
 

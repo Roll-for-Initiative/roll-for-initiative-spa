@@ -1,6 +1,6 @@
 import * as BABYLON from 'babylonjs'
 import 'babylonjs-loaders'
-import { animationAsync } from './utils'
+import { animationAsync, degToRad } from './utils'
 
 type PlayerData = {
   xPos: number
@@ -12,10 +12,11 @@ type PlayerData = {
   parent: BABYLON.AbstractMesh
   mainMesh?: BABYLON.AbstractMesh
   cardInfo: {
-    cardOrigin: BABYLON.Vector3,
-    cardAngle: number,
+    cardOrigin: BABYLON.Vector3
+    cardAngle: number
     index: number
   }
+  rotation: BABYLON.Quaternion
 }
 
 type cardParts = {
@@ -24,6 +25,13 @@ type cardParts = {
   initiative: BABYLON.AbstractMesh
   meta: BABYLON.AbstractMesh
   picture: BABYLON.AbstractMesh
+}
+
+export type CardInfo = {
+  cardPosition: BABYLON.Vector3
+  cardOrigin: BABYLON.Vector3
+  cardAngle: number
+  index: number
 }
 
 const IMAGES = ['dragon.jpg', 'dwarf.jpg', 'wizard.jpg']
@@ -40,22 +48,9 @@ export class PlayerCard {
   parts: cardParts
   parent: BABYLON.AbstractMesh
   mainMesh: BABYLON.AbstractMesh
-  dir: number
-  speed: number
-  startPos: BABYLON.Vector3
-  endPos: BABYLON.Vector3
-  cardInfo: {
-    cardPosition:number
-    cardOrigin: BABYLON.Vector3,
-    cardAngle: number,
-    index: number
-  }
-  cardInfoInitalCard: {
-    cardPosition:number
-    cardOrigin: BABYLON.Vector3,
-    cardAngle: number,
-    index: number
-  }
+  position: BABYLON.Vector3
+  rotation: BABYLON.Quaternion
+  cardInfo: CardInfo
 
   constructor(playerData: PlayerData) {
     Object.assign(this, playerData)
@@ -63,7 +58,6 @@ export class PlayerCard {
 
   async loadModel() {
     const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/card9.glb', '', this.scene)
-    console.log(model)
     this.mainMesh = model.meshes[0]
 
     this.parts = {
@@ -75,35 +69,27 @@ export class PlayerCard {
     }
 
     this.parent.addChild(model.meshes[0])
-   
-    
-    
-    this.startPos = BABYLON.Vector3.Zero()
-    this.endPos =new BABYLON.Vector3(0,0,this.cardInfo.cardPosition)
-
-    this.startRot = BABYLON.Vector3.Zero()
-    this.endRot = BABYLON.Vector3.Zero()
-
-    model.meshes[0].position._z = this.xPos
-    this.dir = 1
-    this.speed = Math.random()
-    // this.mainMesh.rotation = new BABYLON.Vector3(-Math.PI / 2, Math.PI / 2, 0)
-    model.meshes[0].rotateAround(model.meshes[0].position, BABYLON.Axis.X, this.cardInfo.cardAngle)
-
- 
-
-    model.meshes[0].position._x =  (this.cardInfo.index )
 
     this.setMaterials()
   }
 
-  setMaterials(){
-    this.setPictureMaterial()
-    this.setDynamicTexture(this.parts.name, "name_texture", this.name)
-    this.setDynamicTexture(this.parts.meta, "initiave_texture", this.modifier.toString())
+  setPosition(position: BABYLON.Vector3) {
+    this.position = position
+    this.mainMesh.position = position
   }
 
-  setDynamicTexture(part: BABYLON.AbstractMesh, name: string,text: string ){
+  setRotation(target: BABYLON.Quaternion) {
+    this.mainMesh.rotationQuaternion = target
+    this.rotation = target
+  }
+
+  async setMaterials() {
+    this.setPictureMaterial()
+    this.setDynamicTexture(this.parts.name, 'name_texture', this.name)
+    this.setDynamicTexture(this.parts.meta, 'initiave_texture', this.modifier.toString())
+  }
+
+  setDynamicTexture(part: BABYLON.AbstractMesh, name: string, text: string) {
     const font = '82px RuneScape Chat'
     const textureName = new BABYLON.DynamicTexture(
       'nameTexture',
@@ -116,47 +102,55 @@ export class PlayerCard {
     part.material = materialName
   }
 
-  async setPictureMaterial(){
-    const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync('M49UMU#9', this.scene)
-    nm.getInputBlocks().forEach((e)=>{
-      if (e.name === "offsets"){
-        e.value._x = 1 + (Math.random() * 0.25)
-        e.value._y = 1 + (Math.random() * 0.25)
-        e.value._z = 1 +  (Math.random() * 0.25)
+  async setPictureMaterial() {
+    const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync('M49UMU#10', this.scene)
+    nm.getInputBlocks().forEach((e) => {
+      if (e.name === 'offsets') {
+        e.value._x = 1 + Math.random() * 0.25
+        e.value._y = 1 + Math.random() * 0.25
+        e.value._z = 1 + Math.random() * 0.25
       }
 
-      if (e.name === "sheen"){
+      if (e.name === 'sheen') {
         e.value = 0.2 + (1 - Math.random())
       }
     })
-    
+
     const textureBlock = nm.getBlockByPredicate(
       (input) => input.name === 'picture'
     ) as BABYLON.TextureBlock
-    const interval = setInterval(() => {
-      if (textureBlock.isReady()) {
-        const imgName =
-          this.name === 'Monsters'
-            ? MONSTERS[Math.floor(Math.random() * MONSTERS.length)]
-            : IMAGES[Math.floor(Math.random() * IMAGES.length)]
-        const text = new BABYLON.Texture(
-          this.imgUrl ? this.imgUrl : `models/textures/${imgName}`,
-          this.scene
-        )
-        textureBlock.texture = text
-        clearInterval(interval)
-      }
-    }, 200)
+    let loaded = false
+
+    // await new Promise((resolve) => {
+    //   const interval = setInterval(() => {
+    //     if (textureBlock.isReady()) {
+    //       clearInterval(interval)
+    //       const imgName =
+    //         this.name === 'Monsters'
+    //           ? MONSTERS[Math.floor(Math.random() * MONSTERS.length)]
+    //           : IMAGES[Math.floor(Math.random() * IMAGES.length)]
+    //       const text = new BABYLON.Texture(
+    //         this.imgUrl ? this.imgUrl : `models/textures/${imgName}`,
+    //         this.scene, true, true, undefined, ()=>{
+    //           if (!loaded){
+    //             textureBlock.texture = text
+    //             loaded=true
+    //             resolve(true)
+    //           }
+    //         }
+    //       )
+    //     }
+    //   }, 500)
+    // })
 
     this.parts.picture.material = nm
   }
 
-  idleLerp() {
-    let t = (BABYLON.Tools.Now / 10000) * this.speed
-    t = Math.sin(t * Math.PI * 0.5)
-    this.mainMesh.position = BABYLON.Vector3.Lerp(this.startPos, this.endPos, t)
-  }
-  
+  // idleLerp() {
+  //   let t = (BABYLON.Tools.Now / 10000) * this.speed
+  //   t = Math.sin(t * Math.PI * 0.5)
+  //   this.mainMesh.position = BABYLON.Vector3.Lerp(this.startPos, this.endPos, t)
+  // }
 
   async reveal() {
     return await animationAsync((resolver) => {
@@ -175,12 +169,12 @@ export class PlayerCard {
     })
   }
 
-  idle() {
-    if (this.mainMesh.position.y >= 1.5) {
-      this.dir = -1
-    } else if (this.mainMesh?.position.y <= -1.5) {
-      this.dir = 1
-    }
-    this.mainMesh.position.y += this.speed * this.dir
-  }
+  // idle() {
+  //   if (this.mainMesh.position.y >= 1.5) {
+  //     this.dir = -1
+  //   } else if (this.mainMesh?.position.y <= -1.5) {
+  //     this.dir = 1
+  //   }
+  //   this.mainMesh.position.y += this.speed * this.dir
+  // }
 }
