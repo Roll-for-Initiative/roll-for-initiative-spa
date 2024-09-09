@@ -23,6 +23,7 @@ import { usePlayerStore } from '@/stores/players'
 const playerStore = usePlayerStore()
 
 const roll = () => {
+  playerStore.modalIsOpen = false
   playerStore.roll()
 }
 

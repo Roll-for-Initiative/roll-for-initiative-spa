@@ -1,7 +1,7 @@
 <template>
   <Scene></Scene>
   <Navigation />
-  <Modal>
+  <Modal title="Heroes & Allies">
     <SetupView />
   </Modal>
 </template>
@@ -26,8 +26,8 @@ const loadStateFromLocalStorage = () => {
 loadStateFromLocalStorage()
 </script>
 
-<style>
-main {
-  min-height: 100vh;
+<style lang="scss">
+body {
+  overflow-y: hidden;
 }
 </style>
