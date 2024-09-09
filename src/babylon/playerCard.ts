@@ -72,7 +72,6 @@ export class PlayerCard {
     }
 
     this.parent.setEnabled(false)
-    console.log(this.parent.isVisible)
     await this.setMaterials()
   }
 
@@ -123,15 +122,12 @@ export class PlayerCard {
       (input) => input.name === 'picture'
     ) as BABYLON.TextureBlock
 
-    console.log(textureBlock)
 
     const test = new Promise((resolve) => {
       if (this.loaded)resolve(true)
 
       let loaded = false
-      while (!loaded) {`
-        `
-        console.log(textureBlock.isReady())
+      while (!loaded) {
         if (textureBlock.isReady()) {
           this.loaded = true
           loaded = true
@@ -139,17 +135,12 @@ export class PlayerCard {
             this.name === 'Monsters'
               ? MONSTERS[Math.floor(Math.random() * MONSTERS.length)]
               : IMAGES[Math.floor(Math.random() * IMAGES.length)]
-      console.log(imgName)
-
           const text = new BABYLON.Texture(
             this.imgUrl ? this.imgUrl : `models/textures/${imgName}`,
             this.scene, false, false, undefined, () => {
-              console.log('setting loaded!')
             }
-            
           )
           textureBlock.texture = text
-
         }
       }
       resolve(true)

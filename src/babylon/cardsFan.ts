@@ -18,7 +18,6 @@ export class CardsFan {
     this.cards = []
     this.frame = 0
     this.initialized = false
-    this.init()
   }
 
   async init() {
@@ -26,8 +25,9 @@ export class CardsFan {
     // const range = degToRad(140)
     // const initialAngle  = degToRad(110)
 
-    for (let i = 0; i < this.players.length - 1; i++) {
-      const cardInfo =  this.calcAlignment(i, this.players.length - 1)
+    for (let i = 0; i < this.players.length ; i++) {
+        console.log(this.players[i])
+      const cardInfo =  this.calcAlignment(i, this.players.length )
       if (!this.initialCardInfo) {
         this.initialCardInfo = cardInfo
       }

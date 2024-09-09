@@ -17,10 +17,14 @@ export default class Brazier {
         const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/brazier.glb', '', this.scene)
         const main = model.meshes[0]
         main.position = this.position
+        console.log(model.meshes)
         
-        const material = new BABYLON.StandardMaterial("mat", this.scene)
-       material.diffuseColor = new BABYLON.Color3(0.5,0.5,0.5)
-       main.material= material
+        const material = new BABYLON.PBRMaterial("mat", this.scene)
+        material.albedoColor = new BABYLON.Color3(212/255,175/255,55/255)
+        material.metallic =  5
+        material.roughness =  0.25
+
+        model.meshes[1].material= material
 
         const fireSystem = await BABYLON.ParticleHelper.CreateAsync("fire", this.scene)
         fireSystem.start(this.mesh)

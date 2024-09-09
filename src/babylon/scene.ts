@@ -63,14 +63,6 @@ export default class Scene {
       this.camera.framingBehavior.mode = BABYLON.FramingBehavior.FitFrustumSidesMode
     }
 
-    const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, -3), this.scene)
-    light.intensity = .75
-
-    this.scene.fogMode = BABYLON.Scene.FOGMODE_EXP
-
-    this.scene.fogColor = new BABYLON.Color3(1, 1, 1)
-    this.scene.fogDensity = 0.00005
-
     window.addEventListener('resize', this.onResize.bind(this))
 
     this.readPlayersFromLocalStore()
@@ -91,11 +83,28 @@ export default class Scene {
     new Brazier(this.scene, new BABYLON.Vector3(3,-5,-10))
     new Brazier(this.scene, new BABYLON.Vector3(3,-5,10))
    
+    const defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera]);
+    defaultPipeline.bloomEnabled = true;
+    defaultPipeline.fxaaEnabled = true;
+    defaultPipeline.imageProcessingEnabled = true
+    // defaultPipeline.chromaticAberrationEnabled = true
+    defaultPipeline.imageProcessing.colorCurvesEnabled = true
+    defaultPipeline.imageProcessing.vignetteEnabled = true
+    defaultPipeline.imageProcessing.toneMappingEnabled = true
+    const blendMode = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES
+    defaultPipeline.imageProcessing.vignetteBlendMode = blendMode;
+    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(166,55, 41, 1)
+    defaultPipeline.imageProcessing.vignetteWeight = 0.00005
+    console.log(defaultPipeline.imageProcessing.vignetteColor)
+
+    defaultPipeline.bloomWeight = 0.25;
+    defaultPipeline.bloomScale = 0.2
   }
 
   async readPlayersFromLocalStore() {
     this.store.roll()
     const allPlayers = this.store.results
+    console.log(allPlayers)
    this.fan = new CardsFan(this.scene, allPlayers)
     this.fan.init()
     this.camera.setTarget(this.fan.body.position.subtract(new BABYLON.Vector3(0,0,-0)) )
