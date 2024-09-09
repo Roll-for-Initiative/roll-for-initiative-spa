@@ -2,7 +2,7 @@
   <Card class="player-card" :style="{ 'background-image': `url(${player.imgUrl})` }">
     <button
       class="button button--icon player-card__delete"
-      v-if="!isDungeonMaster && playerStore.playerCount > 1"
+      v-if="playerStore.playerCount > 1"
       @click="handleDelete"
     >
       x
@@ -26,12 +26,9 @@ import FileInput from './FileInput.vue'
 
 interface Props {
   player: Player
-  isDungeonMaster?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  isDungeonMaster: false
-})
+const props = defineProps<Props>()
 
 const model = reactive({
   name: props.player.name,
@@ -42,11 +39,7 @@ const model = reactive({
 const playerStore = usePlayerStore()
 
 watch(model, (value) => {
-  if (props.isDungeonMaster) {
-    playerStore.updateDungeonMaster(value)
-  } else {
-    playerStore.updatePlayer(props.player.id, value)
-  }
+  playerStore.updatePlayer(props.player.id, value)
 })
 
 const handleDelete = () => {

@@ -60,6 +60,7 @@ const increment = () => {
 
   &--small {
     height: 30px;
+    overflow: visible;
   }
 }
 
