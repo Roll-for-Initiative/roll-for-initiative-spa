@@ -1,6 +1,12 @@
 <template>
-  <div class="number-input">
-    <button class="button button--icon number-input__button" @click="decrement">-</button>
+  <div class="number-input" :class="{ 'number-input--small': small }">
+    <button
+      class="number-input__button"
+      :class="{ 'button button--icon': !small }"
+      @click="decrement"
+    >
+      -
+    </button>
     <input
       class="number-input__input"
       v-model="model"
@@ -9,7 +15,13 @@
       type="number"
       :aria-label="name"
     />
-    <button class="button button--icon number-input__button" @click="increment">+</button>
+    <button
+      class="number-input__button"
+      :class="{ 'button button--icon': !small }"
+      @click="increment"
+    >
+      +
+    </button>
   </div>
 </template>
 
@@ -19,8 +31,13 @@ import { computed } from 'vue'
 interface Props {
   name: string
   id: string
+  small?: boolean
 }
-const props = defineProps<Props>()
+
+const props = withDefaults(defineProps<Props>(), {
+  small: false
+})
+
 const model = defineModel<number>({ required: true })
 
 const idAttribute = computed(() => `${props.name}-${props.id}`)
@@ -40,6 +57,10 @@ const increment = () => {
   flex-wrap: nowrap;
   gap: 0.5rem;
   width: 100%;
+
+  &--small {
+    height: 30px;
+  }
 }
 
 .number-input__input {
@@ -57,6 +78,11 @@ const increment = () => {
   &:focus {
     outline: none;
   }
+
+  .number-input--small & {
+    font-size: 3.25rem;
+    line-height: 0.7;
+  }
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -69,5 +95,15 @@ const increment = () => {
 /* Firefox */
 .number-input__input {
   -moz-appearance: textfield;
+}
+
+.number-input--small .number-input__button {
+  font-family: var(--rfi-serif);
+  font-size: 3.25rem;
+  line-height: 0.7;
+  color: var(--rfi-yellow);
+  background-color: transparent;
+  border: none;
+  padding: 0;
 }
 </style>
