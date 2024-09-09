@@ -46,7 +46,7 @@ const handleUpload = (event: any) => {
 const resizeImage = () => {
   // Resize the image
   const canvas: any = document.createElement('canvas')
-  const max_size = 320
+  const max_size = 480
   let width = image.width
   let height = image.height
 
