@@ -5,8 +5,8 @@
     <div class="row setup-view__cards position-relative z-10">
       <div class="col-12 setup-view__cards-grid">
         <PlayerCard v-for="player in playerStore.players" :player="player" :key="player.id" />
-        <Card centered @click="handleAddPlayer">
-          <h2 class="w-75 text-center">Add player</h2>
+        <Card class="setup-view__add-play-card" centered @click="handleAddPlayer">
+          <h2 class="w-75 text-center mb-0">Add player</h2>
         </Card>
       </div>
     </div>
@@ -61,7 +61,7 @@ playerStore.$subscribe((mutation, state) => {
   margin-top: 12px;
 }
 
-.setup-view__actions-btn {
-  outline: 1px solid #ff0000;
+.setup-view__add-play-card {
+  cursor: pointer;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="file-input">
-    <label :for="idAttribute" class="file-input__label">{{ buttonText }}</label>
+    <label :for="idAttribute" class="button file-input__label">{{ buttonText }}</label>
     <input
       :id="idAttribute"
       class="file-input__input"
@@ -70,8 +70,6 @@ const resizeImage = () => {
 </script>
 
 <style lang="scss">
-@use '@/assets/scss/mixins' as *;
-
 .file-input {
   width: 100%;
 }
@@ -81,7 +79,6 @@ const resizeImage = () => {
 }
 
 .file-input__label {
-  @include button;
   width: 100%;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <Card class="player-card" :style="{ 'background-image': `url(${player.imgUrl})` }">
     <button
-      class="player-card__delete"
+      class="button button--icon player-card__delete"
       v-if="!isDungeonMaster && playerStore.playerCount > 1"
       @click="handleDelete"
     >
@@ -55,10 +55,7 @@ const handleDelete = () => {
 </script>
 
 <style lang="scss">
-@use '@/assets/scss/mixins' as *;
-
 .player-card__delete {
-  @include button;
   align-self: flex-end;
   margin-bottom: auto;
 }

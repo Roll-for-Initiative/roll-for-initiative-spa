@@ -1,10 +1,16 @@
-@mixin button {
+.button {
   text-align: center;
-  font-size: 26px;
+  font-size: 18px;
   line-height: 1;
-  padding: 0.5rem 1rem;
+  padding: 6px 1rem;
   color: var(--rfi-black);
   background-color: var(--rfi-yellow);
   border: none;
   cursor: pointer;
+
+  &--icon {
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+  }
 }

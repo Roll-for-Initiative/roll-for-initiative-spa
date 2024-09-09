@@ -1,6 +1,6 @@
 <template>
   <div class="number-input">
-    <button class="number-input__button" @click="decrement">-</button>
+    <button class="button button--icon number-input__button" @click="decrement">-</button>
     <input
       class="number-input__input"
       v-model="model"
@@ -9,7 +9,7 @@
       type="number"
       :aria-label="name"
     />
-    <button class="number-input__button" @click="increment">+</button>
+    <button class="button button--icon number-input__button" @click="increment">+</button>
   </div>
 </template>
 
@@ -35,8 +35,6 @@ const increment = () => {
 </script>
 
 <style lang="scss">
-@use '@/assets/scss/mixins' as *;
-
 .number-input {
   display: flex;
   flex-wrap: nowrap;
@@ -59,10 +57,6 @@ const increment = () => {
   &:focus {
     outline: none;
   }
-}
-
-.number-input__button {
-  @include button;
 }
 
 /* Chrome, Safari, Edge, Opera */
