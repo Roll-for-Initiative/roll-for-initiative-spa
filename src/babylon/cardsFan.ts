@@ -27,12 +27,13 @@ export class CardsFan {
     // const initialAngle  = degToRad(110)
 
     for (let i = 0; i < this.players.length - 1; i++) {
-      const cardInfo = await this.calcAlignment(i, this.players.length - 1)
+      const cardInfo =  this.calcAlignment(i, this.players.length - 1)
       if (!this.initialCardInfo) {
         this.initialCardInfo = cardInfo
       }
 
-      const card = await this.createCard(this.players[i], i + 1, cardInfo)
+      const card = await this.createCard(this.players[i], i + 1, cardInfo, this.initialCardInfo)
+      card.setPosition(this.initialCardInfo.cardPosition)
       this.cards.push(card)
       card.setPosition(this.initialCardInfo.cardPosition)
     
@@ -46,13 +47,13 @@ export class CardsFan {
   update(){
     if (!this.initialized) return 
     for (const card of this.cards){
+        card.parent.setEnabled(true)
         const target =  BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(1, 0, 0), card.cardInfo.cardAngle)
         const current = card.rotation
         const movement = BABYLON.Quaternion.Slerp(current, target, 0.1)
         card.setRotation(movement)
 
         const pos = BABYLON.Vector3.Lerp(card.position, card.cardInfo.cardPosition,this.frame/100000)
-        console.log(this.scene.deltaTime)
         card.setPosition(pos)
         this.frame+= this.scene.deltaTime || 0
     }
@@ -83,6 +84,7 @@ export class CardsFan {
     player: Player,
     initiative: number,
     cardInfo: CardInfo,
+    initial: CardInfo
   ) {
     const playerCard = new PlayerCard({
       xPos: 0,
@@ -95,7 +97,7 @@ export class CardsFan {
       cardInfo: cardInfo,
       rotation: BABYLON.Quaternion.Zero()
     })
-    await playerCard.loadModel()
+    await playerCard.loadModel(initial.cardPosition, BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(1, 0, 0), initial.cardAngle))
     return playerCard
   }
 

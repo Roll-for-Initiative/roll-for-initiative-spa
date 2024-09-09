@@ -46,20 +46,23 @@ export class PlayerCard {
   imgUrl: string
   scene: BABYLON.Scene
   parts: cardParts
-  parent: BABYLON.AbstractMesh
+  parent: BABYLON.Mesh
   mainMesh: BABYLON.AbstractMesh
   position: BABYLON.Vector3
   rotation: BABYLON.Quaternion
   cardInfo: CardInfo
+  loaded: boolean
 
   constructor(playerData: PlayerData) {
     Object.assign(this, playerData)
   }
 
-  async loadModel() {
-    const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/card9.glb', '', this.scene)
+  async loadModel(initialPos:BABYLON.Vector3, initalRot:BABYLON.Quaternion) {
+    const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/card10.glb', '', this.scene)
     this.mainMesh = model.meshes[0]
-
+    this.parent.addChild(model.meshes[0])
+    this.setPosition(initialPos)
+    this.setRotation(initalRot)
     this.parts = {
       backdrop: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'background')[0],
       name: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'Cube')[0],
@@ -68,9 +71,9 @@ export class PlayerCard {
       picture: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'picture')[0]
     }
 
-    this.parent.addChild(model.meshes[0])
-
-    this.setMaterials()
+    this.parent.setEnabled(false)
+    console.log(this.parent.isVisible)
+    await this.setMaterials()
   }
 
   setPosition(position: BABYLON.Vector3) {
@@ -84,7 +87,7 @@ export class PlayerCard {
   }
 
   async setMaterials() {
-    this.setPictureMaterial()
+    await this.setPictureMaterial()
     this.setDynamicTexture(this.parts.name, 'name_texture', this.name)
     this.setDynamicTexture(this.parts.meta, 'initiave_texture', this.modifier.toString())
   }
@@ -119,29 +122,41 @@ export class PlayerCard {
     const textureBlock = nm.getBlockByPredicate(
       (input) => input.name === 'picture'
     ) as BABYLON.TextureBlock
-    let loaded = false
 
-    // await new Promise((resolve) => {
-    //   const interval = setInterval(() => {
-    //     if (textureBlock.isReady()) {
-    //       clearInterval(interval)
-    //       const imgName =
-    //         this.name === 'Monsters'
-    //           ? MONSTERS[Math.floor(Math.random() * MONSTERS.length)]
-    //           : IMAGES[Math.floor(Math.random() * IMAGES.length)]
-    //       const text = new BABYLON.Texture(
-    //         this.imgUrl ? this.imgUrl : `models/textures/${imgName}`,
-    //         this.scene, true, true, undefined, ()=>{
-    //           if (!loaded){
-    //             textureBlock.texture = text
-    //             loaded=true
-    //             resolve(true)
-    //           }
-    //         }
-    //       )
-    //     }
-    //   }, 500)
-    // })
+    console.log(textureBlock)
+
+    const test = new Promise((resolve) => {
+      if (this.loaded)resolve(true)
+
+      let loaded = false
+      while (!loaded) {`
+        `
+        console.log(textureBlock.isReady())
+        if (textureBlock.isReady()) {
+          this.loaded = true
+          loaded = true
+          const imgName =
+            this.name === 'Monsters'
+              ? MONSTERS[Math.floor(Math.random() * MONSTERS.length)]
+              : IMAGES[Math.floor(Math.random() * IMAGES.length)]
+      console.log(imgName)
+
+          const text = new BABYLON.Texture(
+            this.imgUrl ? this.imgUrl : `models/textures/${imgName}`,
+            this.scene, false, false, undefined, () => {
+              console.log('setting loaded!')
+            }
+            
+          )
+          textureBlock.texture = text
+
+        }
+      }
+      resolve(true)
+    })
+
+    await test
+
 
     this.parts.picture.material = nm
   }
