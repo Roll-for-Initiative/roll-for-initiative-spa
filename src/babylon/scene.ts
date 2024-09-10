@@ -2,7 +2,6 @@ import * as BABYLON from 'babylonjs'
 import { RenderAction, type renderCallback } from './renderable'
 import { PlayerCard } from './playerCard'
 import type { PlayerStore } from '@/stores/players'
-import { degToRad } from './utils'
 import Brazier from './brazier'
 import { CardsFan } from './cardsFan'
 
@@ -23,7 +22,6 @@ export default class Scene {
     this.store = store
     this.renderActions = []
     this.players = []
-    this.init()
   }
 
   async init() {
@@ -83,9 +81,9 @@ export default class Scene {
     new Brazier(this.scene, new BABYLON.Vector3(3,-5,-10))
     new Brazier(this.scene, new BABYLON.Vector3(3,-5,10))
    
-    const defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera]);
-    defaultPipeline.bloomEnabled = true;
-    defaultPipeline.fxaaEnabled = true;
+    const defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera])
+    defaultPipeline.bloomEnabled = true
+    defaultPipeline.fxaaEnabled = true
     defaultPipeline.imageProcessingEnabled = true
     // defaultPipeline.chromaticAberrationEnabled = true
     defaultPipeline.imageProcessing.colorCurvesEnabled = true
@@ -97,21 +95,24 @@ export default class Scene {
     defaultPipeline.imageProcessing.vignetteWeight = 0.00005
     console.log(defaultPipeline.imageProcessing.vignetteColor)
 
-    defaultPipeline.bloomWeight = 0.25;
+    defaultPipeline.bloomWeight = 0.25
     defaultPipeline.bloomScale = 0.2
+  }
+
+  async clearScene(){
+    if (this.fan){
+      return await this.fan.destroy()
+    }
   }
 
   async readPlayersFromLocalStore() {
     this.store.roll()
     const allPlayers = this.store.results
     console.log(allPlayers)
-   this.fan = new CardsFan(this.scene, allPlayers)
+    this.fan = new CardsFan(this.scene, allPlayers)
     this.fan.init()
-    this.camera.setTarget(this.fan.body.position.subtract(new BABYLON.Vector3(0,0,-0)) )
-
+    this.camera.setTarget(this.fan.body.position.subtract(new BABYLON.Vector3(0,0,-0)))
   }
-
-
 
   updateBoundingBoxForMesh(mesh: BABYLON.AbstractMesh) {
     console.log(this.cardParent.getChildMeshes(true))
