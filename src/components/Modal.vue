@@ -1,5 +1,5 @@
 <template>
-  <dialog class="modal" ref="modal" :open="playerStore.modalIsOpen" @keydown.esc="closeModal">
+  <dialog class="modal" ref="modal" :open="modalStore.modalIsOpen">
     <div class="container">
       <h1 class="modal__title display-2">{{ title }}</h1>
 
@@ -14,22 +14,18 @@
 
 <script setup lang="ts">
 import { onUpdated, ref } from 'vue'
-import { usePlayerStore } from '@/stores/players'
+import { useModalStore } from '@/stores/modal'
 
 interface Props {
   title: string
 }
 defineProps<Props>()
 
-const playerStore = usePlayerStore()
+const modalStore = useModalStore()
 const modal = ref<HTMLElement | null>(null)
 
-const closeModal = () => {
-  playerStore.closeModal()
-}
-
 onUpdated(() => {
-  if (playerStore.modalIsOpen) {
+  if (modalStore.modalIsOpen) {
     modal.value?.focus()
   }
 })

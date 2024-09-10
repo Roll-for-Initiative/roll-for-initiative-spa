@@ -3,12 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-12 d-flex gap-3 justify-content-center">
-          <button
-            v-if="!playerStore.modalIsOpen"
-            class="text-button"
-            @click="showPlayerModal"
-            @keydown.p="showPlayerModal"
-          >
+          <button v-if="!modalStore.modalIsOpen" class="text-button" @click="showPlayerModal">
             Edit players
           </button>
           <button class="text-button" @click="roll" @keydown.r="roll">Roll for initiative</button>
@@ -30,17 +25,19 @@
 
 <script setup lang="ts">
 import { usePlayerStore } from '@/stores/players'
+import { useModalStore } from '@/stores/modal'
 import NumberInput from './NumberInput.vue'
 
+const modalStore = useModalStore()
 const playerStore = usePlayerStore()
 
 const roll = () => {
-  playerStore.modalIsOpen = false
+  modalStore.closeModal()
   playerStore.roll()
 }
 
 const showPlayerModal = () => {
-  playerStore.showModal()
+  modalStore.showModal()
 }
 </script>
 
