@@ -1,16 +1,28 @@
 <script setup lang="ts">
+import { ref, watch, onMounted, type Ref } from 'vue'
+
 import Scene from '@/babylon/scene'
 import { usePlayerStore } from '@/stores/players'
-import { ref, onMounted, type Ref } from 'vue'
 
 const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
 const playerStore = usePlayerStore()
 
+let scene: Scene | null = null
+
 onMounted(() => {
   if (canvasRef.value) {
-    const scene = new Scene(canvasRef.value, playerStore)
+    scene = new Scene(canvasRef.value, playerStore)
   }
 })
+
+watch(
+  () => playerStore.results,
+  (val) => {
+    if (scene) {
+      // do sth with scene
+    }
+  }
+)
 </script>
 
 <template>

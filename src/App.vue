@@ -1,5 +1,5 @@
 <template>
-  <Scene></Scene>
+  <Scene />
   <Navigation />
   <Modal title="Heroes & Allies">
     <SetupView />
@@ -59,4 +59,4 @@ onMounted(() => {
 body {
   overflow-y: hidden;
 }
-</style>  
+</style>

@@ -101,12 +101,12 @@ export const usePlayerStore = defineStore(storeId, () => {
     dungeonMaster,
     players,
     playerCount,
+    results,
     addPlayer,
     deletePlayer,
     updatePlayer,
     updateDungeonMaster,
     roll,
-    results,
     clearPlayers,
     clearAll
   }
