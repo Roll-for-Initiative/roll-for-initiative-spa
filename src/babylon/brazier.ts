@@ -5,10 +5,9 @@ export default class Brazier {
   mesh: BABYLON.Mesh
   shadowGenerator: BABYLON.ShadowGenerator
 
-  constructor(scene: BABYLON.Scene, position: BABYLON.Vector3, shadowGenerator:BABYLON.ShadowGenerator) {
+  constructor(scene: BABYLON.Scene, position: BABYLON.Vector3) {
     this.scene = scene
     this.position = position
-    this.shadowGenerator = shadowGenerator
     this.init()
   }
 
@@ -24,10 +23,6 @@ export default class Brazier {
       this.scene
     )
 
-    for (const m of model.meshes){
-      this.shadowGenerator.addShadowCaster(m)
-      
-    }
     // console.log("stone",)
     // "brazier_gold"
     console.log(model)

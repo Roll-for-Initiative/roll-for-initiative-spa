@@ -58,16 +58,12 @@ export default class Scene {
     this.readPlayersFromLocalStore()
 
     this.engine.runRenderLoop(this.render.bind(this))
-    const hemiLight = new BABYLON.HemisphericLight("test", new BABYLON.Vector3(-1,1,-1));
-    hemiLight.diffuse = new BABYLON.Color3(180/255, 180/255,90/255)
 
-    const light = new BABYLON.DirectionalLight("test", new BABYLON.Vector3(0,1,-1));
-    light.intensity = 1
+    const light = new BABYLON.HemisphericLight("test", new BABYLON.Vector3(-1,1,-1));
+    light.intensity = 0.5
 
-    const shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
-
-    new Brazier(this.scene, new BABYLON.Vector3(3, -5, -12), shadowGenerator)
-    new Brazier(this.scene, new BABYLON.Vector3(3, -5, 12), shadowGenerator)
+    new Brazier(this.scene, new BABYLON.Vector3(3, -5, -12))
+    new Brazier(this.scene, new BABYLON.Vector3(3, -5, 12))
 
     const defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera])
     defaultPipeline.fxaaEnabled = true
@@ -87,10 +83,6 @@ export default class Scene {
       this.scene
     )
     
-    for (const m of model.meshes){
-      shadowGenerator.addShadowCaster(m)
-    }
-
     const main = model.meshes[0]
 
     main.scaling = new BABYLON.Vector3(5, 4, 4)
