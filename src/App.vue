@@ -2,31 +2,21 @@
   <Scene />
   <Navigation />
   <Modal title="Heroes & Allies">
-    <SetupView />
+    <PlayerSetup />
   </Modal>
 </template>
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 
+import Scene from './components/Scene.vue'
 import Modal from './components/Modal.vue'
 import Navigation from './components/Navigation.vue'
 import { addGlobalKeyBindings } from './composables/useKeyBindings'
-import SetupView from './views/SetupView.vue'
-import { usePlayerStore } from './stores/players'
+import PlayerSetup from './components/PlayerSetup.vue'
+import { useLocalStorage } from './composables/useLocalStorage'
 
-const playerStore = usePlayerStore()
-
-const loadStateFromLocalStorage = () => {
-  const jsonState = localStorage.getItem(playerStore.$id)
-
-  if (jsonState) {
-    const state = JSON.parse(jsonState || '{}')
-    playerStore.$patch(state)
-  }
-}
-
-loadStateFromLocalStorage()
+useLocalStorage()
 
 onMounted(() => {
   document.addEventListener('keydown', addGlobalKeyBindings)
