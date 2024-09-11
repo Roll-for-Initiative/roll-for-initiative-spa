@@ -16,6 +16,7 @@ withDefaults(defineProps<Props>(), {
 
 <style lang="scss">
 .card {
+  position: relative;
   grid-column: span 3;
   display: flex;
   flex-direction: column;
@@ -28,6 +29,10 @@ withDefaults(defineProps<Props>(), {
   background-size: cover;
   padding: 0.5rem;
   aspect-ratio: 3/4;
+
+  > * {
+    z-index: 1;
+  }
 }
 
 .card--centered {
