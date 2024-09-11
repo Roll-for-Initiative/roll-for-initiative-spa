@@ -6,7 +6,7 @@ type PlayerData = {
   xPos: number
   yPos: number
   name: string
-  modifier: number
+  roll: number
   imgUrl: string
   scene: BABYLON.Scene
   parent: BABYLON.AbstractMesh
@@ -17,6 +17,7 @@ type PlayerData = {
     index: number
   }
   rotation: BABYLON.Quaternion
+  initiatve: number
 }
 
 type cardParts = {
@@ -42,7 +43,7 @@ export class PlayerCard {
   xPos: number
   yPos: number
   name: string
-  modifier: number
+  roll: number
   imgUrl: string
   scene: BABYLON.Scene
   parts: cardParts
@@ -52,6 +53,7 @@ export class PlayerCard {
   rotation: BABYLON.Quaternion
   cardInfo: CardInfo
   loaded: boolean
+  initiatve: number
 
   constructor(playerData: PlayerData) {
     Object.assign(this, playerData)
@@ -87,12 +89,15 @@ export class PlayerCard {
 
   async setMaterials() {
     await this.setPictureMaterial()
-    this.setDynamicTexture(this.parts.name, 'name_texture', this.name)
-    this.setDynamicTexture(this.parts.meta, 'initiave_texture', this.modifier.toString())
+    const mat = new BABYLON.PBRMaterial("test")
+    mat.albedoColor = new BABYLON.Color3(0,0,0)
+    this.parts.backdrop.material =  mat
+    this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 40, 80)
+    this.setDynamicTexture(this.parts.meta, 'initiave_texture', this.roll.toString() + " + " + this.initiatve.toString(),52, 160,80)
   }
 
-  setDynamicTexture(part: BABYLON.AbstractMesh, name: string, text: string) {
-    const font = '82px RuneScape Chat'
+  setDynamicTexture(part: BABYLON.AbstractMesh, name: string, text: string, fontSize: number, x:number, y:number) {
+    const font = `${fontSize}px RuneScape Chat`
     const textureName = new BABYLON.DynamicTexture(
       'nameTexture',
       { width: 400, height: 100 },
@@ -100,7 +105,9 @@ export class PlayerCard {
     )
     const materialName = new BABYLON.StandardMaterial(name, this.scene)
     materialName.diffuseTexture = textureName
-    textureName.drawText(text, 40, 80, font, 'yellow', '#0101', false, true)
+    materialName.indexOfRefraction=0
+    textureName.drawText(text, x,y , font, 'yellow', '#000022', false, true)
+    materialName.roughness = 0
     part.material = materialName
   }
 
@@ -114,7 +121,7 @@ export class PlayerCard {
       }
 
       if (e.name === 'sheen') {
-        e.value = 0.2 + (1 - Math.random())
+        e.value = 0.8 + (1 - Math.random())
       }
     })
 
