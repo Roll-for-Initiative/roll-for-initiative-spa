@@ -6,7 +6,7 @@
           <button v-if="!modalStore.modalIsOpen" class="text-button" @click="showPlayerModal">
             Edit players
           </button>
-          <button class="text-button" @click="roll" @keydown.r="roll">Roll for initiative</button>
+          <button class="text-button" @click="roll" @keydown.r="roll">{{ rollText }}</button>
 
           <div class="nav__dm-modifier">
             <h4 class="mb-0">DM modifier</h4>
@@ -24,12 +24,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { usePlayerStore } from '@/stores/players'
 import { useModalStore } from '@/stores/modal'
 import NumberInput from './NumberInput.vue'
 
 const modalStore = useModalStore()
 const playerStore = usePlayerStore()
+
+const rollText = computed(() => (modalStore.modalIsOpen ? 'Roll for initiative' : 'Reroll'))
 
 const roll = () => {
   modalStore.closeModal()
