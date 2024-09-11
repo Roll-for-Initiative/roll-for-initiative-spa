@@ -13,8 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import { onUpdated, ref } from 'vue'
+import { onMounted, onUpdated, onUnmounted, ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
+import { addSceneKeyBindings } from '@/composables/useKeyBindings'
 
 interface Props {
   title: string
@@ -24,10 +25,21 @@ defineProps<Props>()
 const modalStore = useModalStore()
 const modal = ref<HTMLElement | null>(null)
 
+onMounted(() => {
+  document.removeEventListener('keydown', addSceneKeyBindings)
+})
+
 onUpdated(() => {
   if (modalStore.modalIsOpen) {
     modal.value?.focus()
+    document.removeEventListener('keydown', addSceneKeyBindings)
+  } else {
+    document.addEventListener('keydown', addSceneKeyBindings)
   }
+})
+
+onUnmounted(() => {
+  document.addEventListener('keydown', addSceneKeyBindings)
 })
 </script>
 

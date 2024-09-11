@@ -77,11 +77,13 @@ export default class Scene {
     groundMat.albedoTexture = new BABYLON.Texture('models/textures/rock.jpg')
     groundMat.roughness = 1
     ground.material = groundMat
-    
-    new Brazier(this.scene, new BABYLON.Vector3(3,-5,-10))
-    new Brazier(this.scene, new BABYLON.Vector3(3,-5,10))
-   
-    const defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera])
+
+    new Brazier(this.scene, new BABYLON.Vector3(3, -5, -10))
+    new Brazier(this.scene, new BABYLON.Vector3(3, -5, 10))
+
+    const defaultPipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene, [
+      this.camera
+    ])
     defaultPipeline.bloomEnabled = true
     defaultPipeline.fxaaEnabled = true
     defaultPipeline.imageProcessingEnabled = true
@@ -90,8 +92,8 @@ export default class Scene {
     defaultPipeline.imageProcessing.vignetteEnabled = true
     defaultPipeline.imageProcessing.toneMappingEnabled = true
     const blendMode = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES
-    defaultPipeline.imageProcessing.vignetteBlendMode = blendMode;
-    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(166,55, 41, 1)
+    defaultPipeline.imageProcessing.vignetteBlendMode = blendMode
+    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(166, 55, 41, 1)
     defaultPipeline.imageProcessing.vignetteWeight = 0.00005
     console.log(defaultPipeline.imageProcessing.vignetteColor)
 
@@ -99,19 +101,17 @@ export default class Scene {
     defaultPipeline.bloomScale = 0.2
   }
 
-  async clearScene(){
-    if (this.fan){
+  async clearScene() {
+    if (this.fan) {
       return await this.fan.destroy()
     }
   }
 
   async readPlayersFromLocalStore() {
-    this.store.roll()
     const allPlayers = this.store.results
-    console.log(allPlayers)
     this.fan = new CardsFan(this.scene, allPlayers)
     this.fan.init()
-    this.camera.setTarget(this.fan.body.position.subtract(new BABYLON.Vector3(0,0,-0)))
+    this.camera.setTarget(this.fan.body.position.subtract(new BABYLON.Vector3(0, 0, -0)))
   }
 
   updateBoundingBoxForMesh(mesh: BABYLON.AbstractMesh) {
@@ -143,7 +143,7 @@ export default class Scene {
   render() {
     this.scene.render()
     this.renderActions.forEach((action: RenderAction) => action.render('add timestmap'))
-    if (this.fan){
+    if (this.fan) {
       this.fan.update()
     }
   }
@@ -161,26 +161,19 @@ export default class Scene {
   }
 }
 
+// var ligasdasdht = new BABYLON.HemisphericLight("test", BABYLON.Vector3.Forward());
+// var defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera]);
+// defaultPipeline.bloomEnabled = true;
+// defaultPipeline.fxaaEnabled = true;
+// defaultPipeline.imageProcessingEnabled = true
+// defaultPipeline.chromaticAberrationEnabled = true
+// defaultPipeline.imageProcessing.colorCurvesEnabled = true
+// defaultPipeline.imageProcessing.vignetteEnabled = true
+// defaultPipeline.imageProcessing.toneMappingEnabled = true
+// var blendMode = BABYLON.ImageProcessingConfiguration.VIGNETTEMODE_OPAQUE
+// defaultPipeline.imageProcessing.vignetteBlendMode = blendMode;
+// defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 255)
+// defaultPipeline.imageProcessing.vignetteWeight = 0.005
 
-
-
-
-
-
-
- // var ligasdasdht = new BABYLON.HemisphericLight("test", BABYLON.Vector3.Forward());
-    // var defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera]);
-    // defaultPipeline.bloomEnabled = true;
-    // defaultPipeline.fxaaEnabled = true;
-    // defaultPipeline.imageProcessingEnabled = true
-    // defaultPipeline.chromaticAberrationEnabled = true
-    // defaultPipeline.imageProcessing.colorCurvesEnabled = true
-    // defaultPipeline.imageProcessing.vignetteEnabled = true
-    // defaultPipeline.imageProcessing.toneMappingEnabled = true
-    // var blendMode = BABYLON.ImageProcessingConfiguration.VIGNETTEMODE_OPAQUE
-    // defaultPipeline.imageProcessing.vignetteBlendMode = blendMode;
-    // defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 255)
-    // defaultPipeline.imageProcessing.vignetteWeight = 0.005
-
-    // defaultPipeline.bloomWeight = 0.5;
-    // defaultPipeline.bloomScale = 0.5
+// defaultPipeline.bloomWeight = 0.5;
+// defaultPipeline.bloomScale = 0.5

@@ -9,17 +9,19 @@ const playerStore = usePlayerStore()
 
 let scene: Scene | null = null
 
-onMounted(() => {
+onMounted(async () => {
   if (canvasRef.value) {
     scene = new Scene(canvasRef.value, playerStore)
+    await scene.init()
   }
 })
 
 watch(
   () => playerStore.results,
-  (val) => {
+  async (val) => {
     if (scene) {
-      // do sth with scene
+      await scene.clearScene()
+      await scene.readPlayersFromLocalStore()
     }
   }
 )
