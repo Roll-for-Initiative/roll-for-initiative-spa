@@ -1,19 +1,17 @@
 <template>
-  <div class="col-12 col-sm-4 col-lg-3">
-    <div class="player-card" :style="{ 'background-image': `url(${player.imgUrl})` }">
-      <TextInput v-model="model.name" :id="player.id" name="name" />
-      <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
-      <FileInput v-model="model.imgUrl" :id="player.id" name="image" />
+  <Card class="player-card" :style="{ 'background-image': `url(${player.imgUrl})` }">
+    <button
+      class="button button--icon player-card__delete"
+      v-if="playerStore.playerCount > 1"
+      @click="handleDelete"
+    >
+      x
+    </button>
 
-      <button
-        class="w-100"
-        v-if="!isDungeonMaster && playerStore.playerCount > 1"
-        @click="handleDelete"
-      >
-        Delete player
-      </button>
-    </div>
-  </div>
+    <TextInput v-model="model.name" :id="player.id" name="name" />
+    <NumberInput v-model="model.modifier" :id="player.id" name="modifier" />
+    <FileInput v-model="model.imgUrl" :id="player.id" name="image" />
+  </Card>
 </template>
 
 <script setup lang="ts">
@@ -21,18 +19,16 @@ import { reactive, watch } from 'vue'
 
 import { type Player } from '../types/player'
 import { usePlayerStore } from '@/stores/players'
+import Card from './Card.vue'
 import TextInput from './TextInput.vue'
 import NumberInput from './NumberInput.vue'
 import FileInput from './FileInput.vue'
 
 interface Props {
   player: Player
-  isDungeonMaster?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  isDungeonMaster: false
-})
+const props = defineProps<Props>()
 
 const model = reactive({
   name: props.player.name,
@@ -43,11 +39,7 @@ const model = reactive({
 const playerStore = usePlayerStore()
 
 watch(model, (value) => {
-  if (props.isDungeonMaster) {
-    playerStore.updateDungeonMaster(value)
-  } else {
-    playerStore.updatePlayer(props.player.id, value)
-  }
+  playerStore.updatePlayer(props.player.id, value)
 })
 
 const handleDelete = () => {
@@ -56,13 +48,8 @@ const handleDelete = () => {
 </script>
 
 <style lang="scss">
-.player-card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  border: solid 2px black;
-  padding: 0.5rem;
-  margin-bottom: 1.5rem;
+.player-card__delete {
+  align-self: flex-end;
+  margin-bottom: auto;
 }
 </style>

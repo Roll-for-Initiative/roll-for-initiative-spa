@@ -1,6 +1,6 @@
 <template>
   <div class="file-input">
-    <label :for="idAttribute" class="file-input__label">Upload image</label>
+    <label :for="idAttribute" class="button file-input__label">{{ buttonText }}</label>
     <input
       :id="idAttribute"
       class="file-input__input"
@@ -25,6 +25,8 @@ const model = defineModel<string>({ required: false })
 const idAttribute = computed(() => `${props.name}-${props.id}`)
 const image = new Image()
 
+const buttonText = computed(() => (model.value ? 'Remove artwork' : 'Add artwork'))
+
 const handleUpload = (event: any) => {
   const file = event.target.files[0]
 
@@ -44,7 +46,7 @@ const handleUpload = (event: any) => {
 const resizeImage = () => {
   // Resize the image
   const canvas: any = document.createElement('canvas')
-  const max_size = 320
+  const max_size = 480
   let width = image.width
   let height = image.height
 
@@ -78,10 +80,5 @@ const resizeImage = () => {
 
 .file-input__label {
   width: 100%;
-  text-align: center;
-  padding: 1px 6px;
-  background-color: white;
-  border: solid 2px black;
-  cursor: pointer;
 }
 </style>

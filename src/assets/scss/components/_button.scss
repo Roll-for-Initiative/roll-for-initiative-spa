@@ -1,0 +1,16 @@
+.button {
+  text-align: center;
+  font-size: 18px;
+  line-height: 1;
+  padding: 6px 1rem;
+  color: var(--rfi-black);
+  background-color: var(--rfi-yellow);
+  border: none;
+  cursor: pointer;
+
+  &--icon {
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+  }
+}

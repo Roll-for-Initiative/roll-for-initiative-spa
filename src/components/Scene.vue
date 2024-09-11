@@ -1,28 +1,42 @@
 <script setup lang="ts">
+import { ref, watch, onMounted, type Ref } from 'vue'
+
 import Scene from '@/babylon/scene'
 import { usePlayerStore } from '@/stores/players'
-import { ref, onMounted, type Ref } from 'vue'
 
 const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
 const playerStore = usePlayerStore()
 
-onMounted(() => {
+let scene: Scene | null = null
+
+onMounted(async () => {
   if (canvasRef.value) {
-    const scene = new Scene(canvasRef.value, playerStore)
+    scene = new Scene(canvasRef.value, playerStore)
+    await scene.init()
   }
 })
+
+watch(
+  () => playerStore.results,
+  async (val) => {
+    if (scene) {
+      await scene.clearScene()
+      await scene.readPlayersFromLocalStore()
+    }
+  }
+)
 </script>
 
 <template>
-  <div class="scene">
+  <main class="scene">
     <canvas ref="canvasRef" class="scene__render-target"></canvas>
-  </div>
+  </main>
 </template>
 
 <style>
 .scene {
   width: 100%;
-  height: calc(100vh - 24px);
+  height: 100vh;
   background-image: url('@/assets/models/1280x960-terrain-wa.avif');
   background-size: cover;
 }

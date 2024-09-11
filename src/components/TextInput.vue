@@ -1,8 +1,12 @@
 <template>
-  <div class="text-input">
-    <label class="text-input__label" :for="idAttribute">{{ name }}:</label>
-    <input class="text-input__input" v-model="model" :id="idAttribute" :name="name" type="text" />
-  </div>
+  <input
+    class="text-input__input"
+    v-model="model"
+    :id="idAttribute"
+    :name="name"
+    type="text"
+    :aria-label="name"
+  />
 </template>
 
 <script setup lang="ts">
@@ -20,17 +24,18 @@ const idAttribute = computed(() => `${props.name}-${props.id}`)
 </script>
 
 <style lang="scss">
-.text-input {
-  width: 100%;
-}
-
-.text-input__label,
 .text-input__input {
   display: block;
   width: 100%;
-}
+  font-family: 'Jacquard 12 Charted';
+  font-size: 32px;
+  line-height: 1;
 
-.text-input__label {
-  text-transform: capitalize;
+  border: solid 1px var(--rfi-yellow);
+  box-shadow: inset -2px 2px 0 #000;
+
+  &:focus {
+    outline: none;
+  }
 }
 </style>

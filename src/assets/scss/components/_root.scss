@@ -1,0 +1,4 @@
+:root {
+  --#{$prefix}font-serif: #{inspect($font-family-serif)};
+  --#{$prefix}font-charted: #{inspect($font-family-charted)};
+}

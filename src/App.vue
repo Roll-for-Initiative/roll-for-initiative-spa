@@ -1,33 +1,34 @@
 <template>
-  <main>
-    <RouterView />
-  </main>
-
+  <Scene />
   <Navigation />
+  <Modal title="Heroes & Allies">
+    <PlayerSetup />
+  </Modal>
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { onMounted, onUnmounted } from 'vue'
 
-import { usePlayerStore } from './stores/players'
+import Scene from './components/Scene.vue'
+import Modal from './components/Modal.vue'
 import Navigation from './components/Navigation.vue'
+import { addGlobalKeyBindings } from './composables/useKeyBindings'
+import PlayerSetup from './components/PlayerSetup.vue'
+import { useLocalStorage } from './composables/useLocalStorage'
 
-const playerStore = usePlayerStore()
+useLocalStorage()
 
-const loadStateFromLocalStorage = () => {
-  const jsonState = localStorage.getItem(playerStore.$id)
+onMounted(() => {
+  document.addEventListener('keydown', addGlobalKeyBindings)
+})
 
-  if (jsonState) {
-    const state = JSON.parse(jsonState || '{}')
-    playerStore.$patch(state)
-  }
-}
-
-loadStateFromLocalStorage()
+onUnmounted(() => {
+  document.removeEventListener('keydown', addGlobalKeyBindings)
+})
 </script>
 
-<style>
-main {
-  min-height: calc(100vh - 24px);
+<style lang="scss">
+body {
+  overflow-y: hidden;
 }
 </style>

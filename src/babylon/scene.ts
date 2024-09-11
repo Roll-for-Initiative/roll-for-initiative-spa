@@ -2,6 +2,8 @@ import * as BABYLON from 'babylonjs'
 import { RenderAction, type renderCallback } from './renderable'
 import { PlayerCard } from './playerCard'
 import type { PlayerStore } from '@/stores/players'
+import Brazier from './brazier'
+import { CardsFan } from './cardsFan'
 
 export default class Scene {
   engine: BABYLON.Engine
@@ -12,16 +14,17 @@ export default class Scene {
   players: Array<PlayerCard>
   cardParent: BABYLON.AbstractMesh
   store: PlayerStore
+  backgroundCamera: BABYLON.ArcRotateCamera
+  fan: CardsFan
 
   constructor(canvas: HTMLCanvasElement, store: PlayerStore) {
     this.canvas = canvas
     this.store = store
     this.renderActions = []
     this.players = []
-    this.init()
   }
 
-  init() {
+  async init() {
     this.engine = new BABYLON.Engine(this.canvas, true, {
       preserveDrawingBuffer: true,
       stencil: true
@@ -29,9 +32,18 @@ export default class Scene {
 
     this.scene = new BABYLON.Scene(this.engine)
     this.scene.useRightHandedSystem = true
-    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
+    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 1)
 
     this.camera = new BABYLON.ArcRotateCamera(
+      'Camera',
+      0,
+      Math.PI / 2,
+      20,
+      new BABYLON.Vector3(0, 0, 0),
+      this.scene
+    )
+
+    this.backgroundCamera = new BABYLON.ArcRotateCamera(
       'Camera',
       0,
       Math.PI / 2,
@@ -49,57 +61,57 @@ export default class Scene {
       this.camera.framingBehavior.mode = BABYLON.FramingBehavior.FitFrustumSidesMode
     }
 
-    const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, -3), this.scene)
-    light.intensity = 1.5
-
-    this.scene.fogMode = BABYLON.Scene.FOGMODE_EXP
-
-    this.scene.fogColor = new BABYLON.Color3(1, 1, 1)
-    this.scene.fogDensity = 0.00005
-
     window.addEventListener('resize', this.onResize.bind(this))
 
     this.readPlayersFromLocalStore()
 
     this.engine.runRenderLoop(this.render.bind(this))
 
-    // const rotState = { x: this.camera.alpha, y: this.camera.beta }
-    // this.scene.registerBeforeRender(() => {
-    //   this.camera.alpha = rotState.x;
-    //   this.camera.beta = rotState.y;
-    // })
+    const ground = BABYLON.CreateGround('ground', {
+      width: 25,
+      height: 25
+    })
+
+    ground.position.y = -5
+    const groundMat = new BABYLON.PBRMaterial('ground', this.scene)
+    groundMat.albedoTexture = new BABYLON.Texture('models/textures/rock.jpg')
+    groundMat.roughness = 1
+    ground.material = groundMat
+
+    new Brazier(this.scene, new BABYLON.Vector3(3, -5, -10))
+    new Brazier(this.scene, new BABYLON.Vector3(3, -5, 10))
+
+    const defaultPipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene, [
+      this.camera
+    ])
+    defaultPipeline.bloomEnabled = true
+    defaultPipeline.fxaaEnabled = true
+    defaultPipeline.imageProcessingEnabled = true
+    // defaultPipeline.chromaticAberrationEnabled = true
+    defaultPipeline.imageProcessing.colorCurvesEnabled = true
+    defaultPipeline.imageProcessing.vignetteEnabled = true
+    defaultPipeline.imageProcessing.toneMappingEnabled = true
+    const blendMode = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES
+    defaultPipeline.imageProcessing.vignetteBlendMode = blendMode
+    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(166, 55, 41, 1)
+    defaultPipeline.imageProcessing.vignetteWeight = 0.00005
+    console.log(defaultPipeline.imageProcessing.vignetteColor)
+
+    defaultPipeline.bloomWeight = 0.25
+    defaultPipeline.bloomScale = 0.2
+  }
+
+  async clearScene() {
+    if (this.fan) {
+      return await this.fan.destroy()
+    }
   }
 
   async readPlayersFromLocalStore() {
-    this.store.roll()
     const allPlayers = this.store.results
-
-    this.cardParent = new BABYLON.Mesh('cardParent', this.scene)
-    for (const player of allPlayers) {
-      const playerCard = new PlayerCard({
-        xPos: this.players.length * -0.75 + +0.5,
-        yPos: 0,
-        name: player.name,
-        imgUrl: player.imgUrl,
-        modifier: allPlayers.indexOf(player) + 1,
-        scene: this.scene,
-        parent: this.cardParent
-      })
-      await playerCard.loadModel()
-      this.players.push(playerCard)
-    }
-
-    this.updateBoundingBoxForMesh(this.cardParent)
-    this.cardParent._updateBoundingInfo()
-    this.camera.setTarget(this.cardParent)
-
-    this.revealCards()
-  }
-
-  async revealCards() {
-    for (const player of this.players) {
-      await player.reveal()
-    }
+    this.fan = new CardsFan(this.scene, allPlayers)
+    this.fan.init()
+    this.camera.setTarget(this.fan.body.position.subtract(new BABYLON.Vector3(0, 0, -0)))
   }
 
   updateBoundingBoxForMesh(mesh: BABYLON.AbstractMesh) {
@@ -131,8 +143,8 @@ export default class Scene {
   render() {
     this.scene.render()
     this.renderActions.forEach((action: RenderAction) => action.render('add timestmap'))
-    for (const player of this.players) {
-      player.idleLerp()
+    if (this.fan) {
+      this.fan.update()
     }
   }
 
@@ -148,3 +160,20 @@ export default class Scene {
     })
   }
 }
+
+// var ligasdasdht = new BABYLON.HemisphericLight("test", BABYLON.Vector3.Forward());
+// var defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, this.scene, [this.camera]);
+// defaultPipeline.bloomEnabled = true;
+// defaultPipeline.fxaaEnabled = true;
+// defaultPipeline.imageProcessingEnabled = true
+// defaultPipeline.chromaticAberrationEnabled = true
+// defaultPipeline.imageProcessing.colorCurvesEnabled = true
+// defaultPipeline.imageProcessing.vignetteEnabled = true
+// defaultPipeline.imageProcessing.toneMappingEnabled = true
+// var blendMode = BABYLON.ImageProcessingConfiguration.VIGNETTEMODE_OPAQUE
+// defaultPipeline.imageProcessing.vignetteBlendMode = blendMode;
+// defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 255)
+// defaultPipeline.imageProcessing.vignetteWeight = 0.005
+
+// defaultPipeline.bloomWeight = 0.5;
+// defaultPipeline.bloomScale = 0.5
