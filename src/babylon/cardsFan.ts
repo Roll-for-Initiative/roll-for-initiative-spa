@@ -57,7 +57,6 @@ export class CardsFan {
   async destroy() {
     return new Promise((resolve) => {
       this.body.dispose(false,true)
-      console.log('hi', this.cards)
       for (const card of this.cards) {
         console.log('card',card)
         card.parent.dispose(false, true)

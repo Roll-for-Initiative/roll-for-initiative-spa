@@ -60,17 +60,22 @@ export class PlayerCard {
   }
 
   async loadModel(initialPos:BABYLON.Vector3, initalRot:BABYLON.Quaternion) {
-    const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/card10.glb', '', this.scene)
+    const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/cardtest.glb', '', this.scene)
     this.mainMesh = model.meshes[0]
     this.parent.addChild(model.meshes[0])
     this.setPosition(initialPos)
     this.setRotation(initalRot)
+
+    for (const t of model.meshes) {
+      console.log(t.name)
+    }
+
     this.parts = {
-      backdrop: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'background')[0],
-      name: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'Cube')[0],
-      initiative: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'initiative')[0],
-      meta: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'Cube.001')[0],
-      picture: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'picture')[0]
+      backdrop: model.meshes[5],
+      name: model.meshes[2],
+      // initiative: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'initiative')[0],
+      meta: model.meshes[4],
+      picture: model.meshes[3]
     }
 
     this.parent.setEnabled(false)
@@ -89,11 +94,12 @@ export class PlayerCard {
 
   async setMaterials() {
     await this.setPictureMaterial()
-    const mat = new BABYLON.PBRMaterial("test")
-    mat.albedoColor = new BABYLON.Color3(0,0,0)
+    const mat = new BABYLON.PBRMaterial("test", this.scene)
+    mat.albedoColor = new BABYLON.Color3(0.04,0.04,0.04)
+    mat.roughness = 1
     this.parts.backdrop.material =  mat
-    this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 40, 80)
-    this.setDynamicTexture(this.parts.meta, 'initiave_texture', this.roll.toString() + " + " + this.initiatve.toString(),52, 160,80)
+    this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 60, 80)
+    this.setDynamicTexture(this.parts.meta, 'initiave_texture', this.roll.toString() + " + " + this.initiatve.toString(),52, 120,80)
   }
 
   setDynamicTexture(part: BABYLON.AbstractMesh, name: string, text: string, fontSize: number, x:number, y:number) {
@@ -103,25 +109,25 @@ export class PlayerCard {
       { width: 400, height: 100 },
       this.scene
     )
-    const materialName = new BABYLON.StandardMaterial(name, this.scene)
-    materialName.diffuseTexture = textureName
-    materialName.indexOfRefraction=0
-    textureName.drawText(text, x,y , font, 'yellow', '#000022', false, true)
-    materialName.roughness = 0
+    const materialName = new BABYLON.PBRMaterial(name, this.scene)
+    materialName.roughness = 1
+    materialName.albedoTexture = textureName
     part.material = materialName
+
+    textureName.drawText(text, x,y , font, '#FAFA33', '#353535', false, true)
   }
 
   async setPictureMaterial() {
     const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync('M49UMU#10', this.scene)
     nm.getInputBlocks().forEach((e) => {
       if (e.name === 'offsets') {
-        e.value._x = 1 + Math.random() * 0.25
-        e.value._y = 1 + Math.random() * 0.25
-        e.value._z = 1 + Math.random() * 0.25
+        e.value._x = 1 + Math.random() * 0.75 
+        e.value._y = 1 + Math.random() * 0.75
+        e.value._z = 1 + Math.random() * 0.75
       }
 
       if (e.name === 'sheen') {
-        e.value = 0.8 + (1 - Math.random())
+        e.value =   (Math.random() * 0.5)
       }
     })
 
