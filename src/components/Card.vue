@@ -24,7 +24,7 @@ withDefaults(defineProps<Props>(), {
   align-items: flex-start;
   gap: 0.5rem;
   border: solid 4px #000;
-  border-radius: 3px;
+  border-radius: 7px;
   background-color: var(--rfi-black);
   background-size: cover;
   padding: 0.5rem;
