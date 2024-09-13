@@ -68,6 +68,7 @@ const increment = () => {
   color: var(--rfi-yellow);
   font-size: 1.625rem;
   line-height: 1;
+  user-select: none;
 
   &:focus {
     outline: none;
