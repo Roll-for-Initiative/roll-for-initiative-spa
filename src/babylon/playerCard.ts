@@ -53,14 +53,19 @@ export class PlayerCard {
   rotation: BABYLON.Quaternion
   cardInfo: CardInfo
   loaded: boolean
-  initiatve: number
+  initiative: number
 
   constructor(playerData: PlayerData) {
     Object.assign(this, playerData)
   }
 
-  async loadModel(initialPos:BABYLON.Vector3, initalRot:BABYLON.Quaternion) {
-    const model = await BABYLON.SceneLoader.ImportMeshAsync('', 'models/cardtest.glb', '', this.scene)
+  async loadModel(initialPos: BABYLON.Vector3, initalRot: BABYLON.Quaternion) {
+    const model = await BABYLON.SceneLoader.ImportMeshAsync(
+      '',
+      'models/cardtest.glb',
+      '',
+      this.scene
+    )
     this.mainMesh = model.meshes[0]
     this.parent.addChild(model.meshes[0])
     this.setPosition(initialPos)
@@ -94,15 +99,29 @@ export class PlayerCard {
 
   async setMaterials() {
     await this.setPictureMaterial()
-    const mat = new BABYLON.PBRMaterial("test", this.scene)
-    mat.albedoColor = new BABYLON.Color3(0.04,0.04,0.04)
+    const mat = new BABYLON.PBRMaterial('test', this.scene)
+    mat.albedoColor = new BABYLON.Color3(0.04, 0.04, 0.04)
     mat.roughness = 1
-    this.parts.backdrop.material =  mat
+    this.parts.backdrop.material = mat
     this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 60, 80)
-    this.setDynamicTexture(this.parts.meta, 'initiave_texture', this.roll.toString() + " + " + this.initiatve.toString(),52, 120,80)
+    this.setDynamicTexture(
+      this.parts.meta,
+      'initiave_texture',
+      this.roll.toString() + ' + ' + this.initiatve.toString(),
+      52,
+      120,
+      80
+    )
   }
 
-  setDynamicTexture(part: BABYLON.AbstractMesh, name: string, text: string, fontSize: number, x:number, y:number) {
+  setDynamicTexture(
+    part: BABYLON.AbstractMesh,
+    name: string,
+    text: string,
+    fontSize: number,
+    x: number,
+    y: number
+  ) {
     const font = `${fontSize}px RuneScape Chat`
     const textureName = new BABYLON.DynamicTexture(
       'nameTexture',
@@ -114,20 +133,20 @@ export class PlayerCard {
     materialName.albedoTexture = textureName
     part.material = materialName
 
-    textureName.drawText(text, x,y , font, '#FAFA33', '#353535', false, true)
+    textureName.drawText(text, x, y, font, '#FAFA33', '#353535', false, true)
   }
 
   async setPictureMaterial() {
     const nm = await BABYLON.NodeMaterial.ParseFromSnippetAsync('M49UMU#10', this.scene)
     nm.getInputBlocks().forEach((e) => {
       if (e.name === 'offsets') {
-        e.value._x = 1 + Math.random() * 0.75 
+        e.value._x = 1 + Math.random() * 0.75
         e.value._y = 1 + Math.random() * 0.75
         e.value._z = 1 + Math.random() * 0.75
       }
 
       if (e.name === 'sheen') {
-        e.value =   (Math.random() * 0.5)
+        e.value = Math.random() * 0.5
       }
     })
 
@@ -135,9 +154,8 @@ export class PlayerCard {
       (input) => input.name === 'picture'
     ) as BABYLON.TextureBlock
 
-
     const test = new Promise((resolve) => {
-      if (this.loaded)resolve(true)
+      if (this.loaded) resolve(true)
 
       let loaded = false
       while (!loaded) {
@@ -150,8 +168,11 @@ export class PlayerCard {
               : IMAGES[Math.floor(Math.random() * IMAGES.length)]
           const text = new BABYLON.Texture(
             this.imgUrl ? this.imgUrl : `models/textures/${imgName}`,
-            this.scene, false, false, undefined, () => {
-            }
+            this.scene,
+            false,
+            false,
+            undefined,
+            () => {}
           )
           textureBlock.texture = text
         }
@@ -160,7 +181,6 @@ export class PlayerCard {
     })
 
     await test
-
 
     this.parts.picture.material = nm
   }
