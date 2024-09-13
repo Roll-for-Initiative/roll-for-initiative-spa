@@ -4,7 +4,6 @@
   <Modal title="Heroes & Allies">
     <PlayerSetup />
   </Modal>
-  <div class="test"></div>
 </template>
 
 <script setup lang="ts">
