@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-12 d-flex gap-3 justify-content-center">
           <button v-if="!modalStore.modalIsOpen" class="text-button" @click="showPlayerModal">
-            Edit players
+            Edit
           </button>
           <button class="text-button" @click="roll" @keydown.r="roll">{{ rollText }}</button>
 
