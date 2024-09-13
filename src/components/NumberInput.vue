@@ -7,14 +7,8 @@
     >
       -
     </button>
-    <input
-      class="number-input__input"
-      v-model="model"
-      :id="idAttribute"
-      :name="name"
-      type="number"
-      :aria-label="name"
-    />
+
+    <span class="number-input__input">{{ displayValue }}</span>
     <button
       class="number-input__button"
       :class="{ 'button button--icon': !small }"
@@ -39,8 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const model = defineModel<number>({ required: true })
-
-const idAttribute = computed(() => `${props.name}-${props.id}`)
+const displayValue = computed(() => (model.value > 0 ? `+${model.value}` : model.value))
 
 const decrement = () => {
   model.value--
