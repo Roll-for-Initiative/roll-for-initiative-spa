@@ -9,11 +9,11 @@ export const addGlobalKeyBindings = (e: KeyboardEvent) => {
   }
 
   if (e.key === 'ArrowLeft') {
-    console.log('change background')
+    // console.log('change background')
   }
 
   if (e.key === 'ArrowRight') {
-    console.log('change background')
+    // console.log('change background')
   }
 }
 

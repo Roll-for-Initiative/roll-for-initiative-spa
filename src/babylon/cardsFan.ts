@@ -31,8 +31,8 @@ export class CardsFan {
     // const initialAngle  = degToRad(110)
 
     for (let i = 0; i < this.players.length; i++) {
-      console.log(this.players[i])
       const cardInfo = this.calcAlignment(i, this.players.length)
+
       if (!this.initialCardInfo) {
         this.initialCardInfo = cardInfo
       }
@@ -56,14 +56,18 @@ export class CardsFan {
 
   async destroy() {
     return new Promise((resolve) => {
-      this.body.dispose(false,true)
-      console.log('hi', this.cards)
       for (const card of this.cards) {
-        console.log('card',card)
-        card.parent.dispose(false, true)
-       this.scene.removeMesh(card.parent);
+        card.cardInfo.cardPosition = this.initialCardInfo.cardPosition
+        card.cardInfo.cardAngle = this.initialCardInfo.cardAngle
       }
-      resolve(null)
+
+      // this.hideCards()
+      // this.body.dispose(false, true)
+      // for (const card of this.cards) {
+      //   card.parent.dispose(false, true)
+      //   this.scene.removeMesh(card.parent)
+      // }
+      // resolve(null)
     })
   }
 
@@ -123,6 +127,7 @@ export class CardsFan {
       cardInfo: cardInfo,
       rotation: BABYLON.Quaternion.Zero()
     })
+
     await playerCard.loadModel(
       initial.cardPosition,
       BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(1, 0, 0), initial.cardAngle)
@@ -133,6 +138,12 @@ export class CardsFan {
   async revealCards() {
     for (const card of this.cards) {
       await card.reveal()
+    }
+  }
+
+  async hideCards() {
+    for (const card of this.cards) {
+      await card.hide()
     }
   }
 }
