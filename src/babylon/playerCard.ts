@@ -17,13 +17,13 @@ type PlayerData = {
     index: number
   }
   rotation: BABYLON.Quaternion
-  initiatve: number
+  initiative: number
 }
 
 type cardParts = {
   backdrop: BABYLON.AbstractMesh
   name: BABYLON.AbstractMesh
-  initiative: BABYLON.AbstractMesh
+  initiative?: BABYLON.AbstractMesh | null
   meta: BABYLON.AbstractMesh
   picture: BABYLON.AbstractMesh
 }
@@ -107,7 +107,7 @@ export class PlayerCard {
     this.setDynamicTexture(
       this.parts.meta,
       'initiave_texture',
-      this.roll.toString() + ' + ' + this.initiatve.toString(),
+      this.roll.toString() + ' + ' + this.initiative.toString(),
       52,
       120,
       80

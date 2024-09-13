@@ -56,11 +56,11 @@ export class CardsFan {
 
   async destroy() {
     return new Promise((resolve) => {
-      this.body.dispose(false,true)
+      this.body.dispose(false, true)
       for (const card of this.cards) {
-        console.log('card',card)
+        console.log('card', card)
         card.parent.dispose(false, true)
-       this.scene.removeMesh(card.parent);
+        this.scene.removeMesh(card.parent)
       }
       resolve(null)
     })
@@ -116,7 +116,7 @@ export class CardsFan {
       name: player.name,
       imgUrl: player.imgUrl,
       roll: player.roll, //allPlayers.indexOf(player) + 1,
-      initiatve: player.modifier,
+      initiative: player.modifier,
       scene: this.scene,
       parent: this.body,
       cardInfo: cardInfo,
