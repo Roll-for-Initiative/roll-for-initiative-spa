@@ -9,7 +9,7 @@ type PlayerData = {
   roll: number
   imgUrl: string
   scene: BABYLON.Scene
-  parent: BABYLON.AbstractMesh
+  parent: BABYLON.TransformNode
   mainMesh?: BABYLON.AbstractMesh
   cardInfo: {
     cardOrigin: BABYLON.Vector3
@@ -23,7 +23,6 @@ type PlayerData = {
 type cardParts = {
   backdrop: BABYLON.AbstractMesh
   name: BABYLON.AbstractMesh
-  initiative: BABYLON.AbstractMesh
   meta: BABYLON.AbstractMesh
   picture: BABYLON.AbstractMesh
 }
@@ -66,14 +65,9 @@ export class PlayerCard {
     this.setPosition(initialPos)
     this.setRotation(initalRot)
 
-    for (const t of model.meshes) {
-      console.log(t.name)
-    }
-
     this.parts = {
       backdrop: model.meshes[5],
       name: model.meshes[2],
-      // initiative: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'initiative')[0],
       meta: model.meshes[4],
       picture: model.meshes[3]
     }
@@ -170,7 +164,6 @@ export class PlayerCard {
   //   t = Math.sin(t * Math.PI * 0.5)
   //   this.mainMesh.position = BABYLON.Vector3.Lerp(this.startPos, this.endPos, t)
   // }
-
   async reveal() {
     return await animationAsync((resolver) => {
       BABYLON.Animation.CreateAndStartAnimation(

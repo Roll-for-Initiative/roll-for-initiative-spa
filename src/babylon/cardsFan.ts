@@ -6,7 +6,7 @@ import type { Player } from '@/types/player'
 export class CardsFan {
   scene: BABYLON.Scene
   cards: Array<PlayerCard>
-  body: BABYLON.Mesh
+  body: BABYLON.TransformNode
   frame: number
   players: Array<Player>
   initialCardInfo: {
@@ -26,12 +26,9 @@ export class CardsFan {
   }
 
   async init() {
-    this.body = new BABYLON.Mesh('body', this.scene)
-    // const range = degToRad(140)
-    // const initialAngle  = degToRad(110)
+    this.body = new BABYLON.TransformNode('body', this.scene)
 
     for (let i = 0; i < this.players.length; i++) {
-      console.log(this.players[i])
       const cardInfo = this.calcAlignment(i, this.players.length)
       if (!this.initialCardInfo) {
         this.initialCardInfo = cardInfo
@@ -58,7 +55,6 @@ export class CardsFan {
     return new Promise((resolve) => {
       this.body.dispose(false,true)
       for (const card of this.cards) {
-        console.log('card',card)
         card.parent.dispose(false, true)
        this.scene.removeMesh(card.parent);
       }

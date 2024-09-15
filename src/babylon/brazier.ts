@@ -23,19 +23,15 @@ export default class Brazier {
       this.scene
     )
 
-    // console.log("stone",)
-    // "brazier_gold"
-    console.log(model)
+    const main = model.meshes[0]
+    main.scaling = new BABYLON.Vector3(2.5, 2.5, 2.5)
+    main.position = this.position
 
     const partStone = model.meshes[2]
     const stoneMat = new BABYLON.PBRMaterial('stone_mat')
     stoneMat.albedoColor = new BABYLON.Color3(138 / 255, 129 / 255, 124 / 255)
     stoneMat.roughness = 1
     partStone.material = stoneMat
-
-    const main = model.meshes[0]
-    main.scaling = new BABYLON.Vector3(2.5, 2.5, 2.5)
-    main.position = this.position
 
     const partGold = model.meshes[1]
     const goldMat = new BABYLON.PBRMaterial('stone_mat')
@@ -49,11 +45,6 @@ export default class Brazier {
     fireLight1.diffuse = new BABYLON.Color3(255 / 255, 100 / 255, 0)
     fireLight1.intensity = 15
 
-    fireSystem.systems[0].maxSize = 3
-    // fireSystem.systems[0].emitter.overlayColor = new BABYLON.Color4(0,0,1,1)
-    fireSystem.systems[0].color1 = new BABYLON.Color4(0, 0, 1, 1)
-    fireSystem.systems[0].color2 = new BABYLON.Color4(0, 0, 1, 1)
-    console.log(fireSystem.systems[0])
     fireSystem.start(this.mesh)
   }
 }
