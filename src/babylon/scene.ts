@@ -74,7 +74,7 @@ export default class Scene {
 
   initLights(){
     const light = new BABYLON.HemisphericLight("test", new BABYLON.Vector3(-1,1,-1));
-    light.intensity = 0.5
+    light.intensity = 2
   }
 
   async clearScene() {

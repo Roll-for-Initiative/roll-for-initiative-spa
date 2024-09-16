@@ -6,7 +6,7 @@ import type { Player } from '@/types/player'
 export class CardsFan {
   scene: BABYLON.Scene
   cards: Array<PlayerCard>
-  body: BABYLON.TransformNode
+  body: BABYLON.Mesh
   frame: number
   players: Array<Player>
   initialCardInfo: {
@@ -26,7 +26,7 @@ export class CardsFan {
   }
 
   async init() {
-    this.body = new BABYLON.TransformNode('body', this.scene)
+    this.body = new BABYLON.Mesh('body', this.scene)
 
     for (let i = 0; i < this.players.length; i++) {
       const cardInfo = this.calcAlignment(i, this.players.length)
@@ -34,10 +34,9 @@ export class CardsFan {
         this.initialCardInfo = cardInfo
       }
 
-      const card = await this.createCard(this.players[i], i + 1, cardInfo, this.initialCardInfo)
+      const card = await this.createCard(this.players[i], cardInfo, this.initialCardInfo)
       card.setPosition(this.initialCardInfo.cardPosition)
       this.cards.push(card)
-      card.setPosition(this.initialCardInfo.cardPosition)
 
       card.setRotation(
         BABYLON.Quaternion.RotationAxis(
@@ -47,6 +46,30 @@ export class CardsFan {
       )
       card.setPosition(this.initialCardInfo.cardPosition)
     }
+
+
+    this.body.actionManager = new BABYLON.ActionManager(this.scene);
+    this.body.actionManager.isRecursive = true;
+    this.body.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, (ev) => {
+          if (ev.meshUnderPointer?.metadata["onPointerEnter"]){
+            console.log(ev.meshUnderPointer?.metadata["onPointerEnter"])
+            ev.meshUnderPointer?.metadata.onPointerEnter()
+
+          }
+        })
+    );
+
+    this.body.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, (ev) => {
+            // let mesh = ev.meshUnderPointer
+            if (ev.meshUnderPointer?.metadata["onPointerLeave"]){
+              console.log(ev.meshUnderPointer?.metadata["onPointerLeave"])
+              ev.meshUnderPointer?.metadata.onPointerLeave()
+  
+            }
+        })
+    );
 
     this.initialized = true
   }
@@ -77,7 +100,7 @@ export class CardsFan {
       const pos = BABYLON.Vector3.Lerp(
         card.position,
         card.cardInfo.cardPosition,
-        this.frame / 100000
+        1/20
       )
       card.setPosition(pos)
       this.frame += this.scene.deltaTime || 0
@@ -85,7 +108,7 @@ export class CardsFan {
   }
 
   calcAlignment = (cardIndex: number, cardCount: number) => {
-    const maxRotation = degToRad(45) //The absolute value of the rotation for the leftmost and rightmost cards (in degrees)
+    const maxRotation = degToRad(25) //The absolute value of the rotation for the leftmost and rightmost cards (in degrees)
     const xOffset = 0 //The horizontal center of the card fan (in worldspace units)
     const xRange = 3 //The horizontal range of the card fan (in worldspace units)
 
@@ -99,19 +122,17 @@ export class CardsFan {
 
     return {
       cardAngle: -rotZ,
-      cardPosition: new BABYLON.Vector3(cardIndex * 0.25, 0, -xPos * 2.5),
+      cardPosition: new BABYLON.Vector3(-cardIndex * 0.25, 0, -xPos * 2.5),
       cardOrigin: new BABYLON.Vector3(0, 0, 0),
       index: cardIndex
     }
   }
 
-  async createCard(player: Player, initiative: number, cardInfo: CardInfo, initial: CardInfo) {
+  async createCard(player: Player, cardInfo: CardInfo, initial: CardInfo) {
     const playerCard = new PlayerCard({
-      xPos: 0,
-      yPos: 0,
       name: player.name,
       imgUrl: player.imgUrl,
-      roll: player.roll, //allPlayers.indexOf(player) + 1,
+      roll: player.roll,
       initiatve: player.modifier,
       scene: this.scene,
       parent: this.body,
