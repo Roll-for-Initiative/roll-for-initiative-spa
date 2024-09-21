@@ -122,7 +122,7 @@ export class CardsFan {
 
     return {
       cardAngle: -rotZ,
-      cardPosition: new BABYLON.Vector3(-cardIndex * 0.25, 0, -xPos * 2.5),
+      cardPosition: new BABYLON.Vector3(-cardIndex * 0.25, 2, -xPos * 2.5),
       cardOrigin: new BABYLON.Vector3(0, 0, 0),
       index: cardIndex
     }

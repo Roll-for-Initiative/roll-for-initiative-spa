@@ -108,14 +108,15 @@ export class PlayerCard {
     mat.albedoColor = new BABYLON.Color3(0.04, 0.04, 0.04)
     mat.roughness = 1
     this.parts.backdrop.material = mat
-    this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 60, 80)
+    this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 120, 240,false)
     this.setDynamicTexture(
       this.parts.meta,
       'initiave_texture',
       this.roll.toString() + ' + ' + this.initiatve.toString(),
-      52,
+      64,
       120,
-      80
+      320, 
+      true
     )
   }
 
@@ -125,20 +126,21 @@ export class PlayerCard {
     text: string,
     fontSize: number,
     x: number,
-    y: number
+    y: number,
+    bold: boolean
   ) {
-    const font = `${fontSize}px RuneScape Chat`
+    const font = bold ?  `bold ${fontSize * 4}px Runescape Chat` : `${fontSize * 4}px "Jacquard 12"` 
     const textureName = new BABYLON.DynamicTexture(
       'nameTexture',
-      { width: 400, height: 100 },
+      { width: 1600, height: 400 },
       this.scene
     )
     const materialName = new BABYLON.PBRMaterial(name, this.scene)
-    materialName.roughness = 1
+    materialName.unlit = true
     materialName.albedoTexture = textureName
     part.material = materialName
 
-    textureName.drawText(text, x, y, font, '#FAFA33', '#353535', false, true)
+    textureName.drawText(text, x, y, font, '#FAFA33', '#181416', false, true)
   }
 
   async setPictureMaterial() {

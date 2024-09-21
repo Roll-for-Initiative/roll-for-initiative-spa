@@ -43,13 +43,22 @@ export default class Scene {
     this.scene = new BABYLON.Scene(this.engine)
     this.scene.useRightHandedSystem = true
     this.scene.clearColor = new BABYLON.Color4(0.001, 0.001, 0.001, 1)
-    this.scene.fogMode = 3
+    this.scene.fogMode = 1
 
     this.scene.fogEnabled = true
-    this.scene.fogDensity = 2
+    this.scene.fogDensity = 0.0025
+    this.scene.fogColor = new BABYLON.Color3(0.25, 0.25, 0.25)
    
     window.addEventListener('resize', this.onResize.bind(this))
     this.engine.runRenderLoop(this.render.bind(this))
+
+    BABYLON.ParticleHelper.CreateAsync("rain", this.scene, false).then((set) => {
+        
+      set.systems[0].updateSpeed = 0.1
+      set.start();
+   
+  });
+
   }
 
   initCamera(){
@@ -128,7 +137,7 @@ export default class Scene {
     defaultPipeline.imageProcessing.vignetteEnabled = true
     defaultPipeline.imageProcessing.toneMappingEnabled = true
     defaultPipeline.imageProcessing.vignetteBlendMode = blendMode;
-    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0.5,0, 0, 1)
+    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0,0.35, 0, 1)
     defaultPipeline.imageProcessing.vignetteWeight = 4
   }
 }
