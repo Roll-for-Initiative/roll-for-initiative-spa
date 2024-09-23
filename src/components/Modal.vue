@@ -1,22 +1,24 @@
 <template>
-  <dialog class="modal" ref="modal" :open="modalStore.modalIsOpen">
-    <h1 class="display-1 modal__backdrop">
-      May the Gods <br />
-      have Mercy
-    </h1>
+  <transition>
+    <dialog class="modal" ref="modal" v-if="modalStore.modalIsOpen" :open="true">
+      <h1 class="display-1 modal__backdrop">
+        May the Gods <br />
+        have Mercy
+      </h1>
 
-    <div class="modal__wrapper">
-      <div class="container">
-        <h1 class="modal__title display-2">{{ title }}</h1>
+      <div class="modal__wrapper">
+        <div class="container">
+          <h1 class="modal__title display-2">{{ title }}</h1>
 
-        <div class="modal__content row">
-          <div class="col-12">
-            <slot></slot>
+          <div class="modal__content row">
+            <div class="col-12">
+              <slot></slot>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </dialog>
+    </dialog>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -107,5 +109,32 @@ onUnmounted(() => {
   position: relative;
   z-index: 10;
   margin-block: 6.5rem;
+}
+</style>
+
+<style lang="scss" scoped>
+.v-leave-from {
+  opacity: 1;
+}
+
+.v-leave-to {
+  opacity: 0;
+
+  .modal__backdrop {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+.v-leave-active {
+  pointer-events: none;
+  transition: opacity 3s ease;
+
+  .modal__wrapper {
+    display: none;
+  }
+
+  .modal__backdrop {
+    transition: transform 3s linear;
+  }
 }
 </style>
