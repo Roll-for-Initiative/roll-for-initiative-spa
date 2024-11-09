@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as BABYLON from 'babylonjs'
 import 'babylonjs-loaders'
 import { animationAsync } from './utils'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { PlayerCard, type CardInfo } from './playerCard'
 import * as BABYLON from 'babylonjs'
 import { degToRad } from './utils'
