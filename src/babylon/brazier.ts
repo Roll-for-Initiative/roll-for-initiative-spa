@@ -43,7 +43,7 @@ export default class Brazier {
 
     const fireLight1 = new BABYLON.PointLight('fire1', this.position.add(new BABYLON.Vector3(0, 12, 0)), this.scene)
     fireLight1.diffuse = new BABYLON.Color3(0, 100 / 255, 0)
-    fireLight1.intensity = 100
+    fireLight1.intensity = 250
 
     fireSystem.start(this.mesh)
   }

@@ -67,7 +67,7 @@ export default class Scene {
       0,
       Math.PI / 2,
       20,
-      new BABYLON.Vector3(8, 2, 0),
+      new BABYLON.Vector3(4, 0, 0),
       this.scene
     )
 

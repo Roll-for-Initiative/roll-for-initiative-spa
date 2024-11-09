@@ -15,7 +15,7 @@ export class Background {
   async loadModels() {
     const model = await BABYLON.SceneLoader.ImportMeshAsync(
       '',
-      'models/background21.glb',
+      'models/background_01.glb',
       '',
       this.scene
     )
@@ -27,31 +27,39 @@ export class Background {
     main.position = new BABYLON.Vector3(-10, -5, 0)
     const doorframe = model.meshes[5]
     const stoneMat = new BABYLON.PBRMaterial('stoneMat')
+    stoneMat.albedoTexture = new BABYLON.Texture('models/textures/marble/Substance_Graph_BaseColor.jpg')
+    stoneMat.bumpTexture = new BABYLON.Texture('models/textures/marble/Substance_Graph_Normal.jpg')
+    stoneMat.metallicTexture = new BABYLON.Texture('models/textures/marble/Substance_Graph_Roughness.jpg')
 
-    stoneMat.albedoColor = new BABYLON.Color3(138 / 255, 129 / 255, 124 / 255)
-    stoneMat.roughness = 1
     doorframe.material = stoneMat
 
     const brickwall = model.meshes[3]
     const brickMat = new BABYLON.PBRMaterial('brickMat')
-    brickMat.albedoColor = new BABYLON.Color3(244 / 255, 243 / 255, 238 / 255)
-    brickMat.roughness = 1
+    brickMat.metallicTexture = new BABYLON.Texture('models/textures/rock/Rock_Moss_001_roughness.jpg')
     brickwall.material = brickMat
+    brickMat.albedoTexture = new BABYLON.Texture('models/textures/rock/Rock_Moss_001_basecolor.jpg')
+    brickMat.bumpTexture = new BABYLON.Texture('models/textures/rock/Rock_Moss_001_normal.jpg')
 
-    const floor = model.meshes[1]
+    // brickMat.
+
+    model.meshes[1].dispose()
+    const floor = BABYLON.CreateGround('floor', {
+      width: 80,
+      height: 80,
+    })
+    floor.position = new BABYLON.Vector3(0,-5,0)
     const floorMat = new BABYLON.PBRMaterial('floorMat')
+    floorMat.albedoTexture = new BABYLON.Texture('models/textures/path2/Stylized_Stone_Floor_005_basecolor.jpg')
+    floorMat.metallicTexture = new BABYLON.Texture('models/textures/path2/Stylized_Stone_Floor_005_roughness.jpg')
+    floorMat.bumpTexture = new BABYLON.Texture('models/textures/path2/Stylized_Stone_Floor_005_normal.jpg')
 
-    const stoneText = new BABYLON.Texture('models/textures/black-stone.jpg')
-      floorMat.albedoTexture = stoneText
-    floorMat.albedoColor = new BABYLON.Color3(70 / 255, 63 / 255, 58 / 255)
-    floorMat.roughness = 1
     floor.material = floorMat
-
 
     const door = model.meshes[2]
     const doorMat = new BABYLON.PBRMaterial('doorMat')
-    doorMat.albedoColor = new BABYLON.Color3(124 / 255, 99 / 255, 84 / 255)
-    doorMat.roughness = 1
+    doorMat.albedoTexture = new BABYLON.Texture('models/textures/door3/Wood_011_basecolor.jpg')
+    doorMat.bumpTexture = new BABYLON.Texture('models/textures/door3/Wood_011_normal.jpg')
+    doorMat.metallicTexture = new BABYLON.Texture('models/textures/door3/Wood_011_roughness.jpg')
     door.material = doorMat
   }
 }
