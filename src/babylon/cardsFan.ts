@@ -76,10 +76,10 @@ export class CardsFan {
 
   async destroy() {
     return new Promise((resolve) => {
-      this.body.dispose(false,true)
+      this.body.dispose(false, true)
       for (const card of this.cards) {
         card.parent.dispose(false, true)
-       this.scene.removeMesh(card.parent);
+        this.scene.removeMesh(card.parent)
       }
       resolve(null)
     })

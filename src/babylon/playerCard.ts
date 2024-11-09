@@ -14,7 +14,7 @@ type PlayerData = {
     index: number
   }
   rotation: BABYLON.Quaternion
-  initiatve: number
+  initiative: number
 }
 
 type cardParts = {
@@ -47,7 +47,7 @@ export class PlayerCard {
   rotation: BABYLON.Quaternion
   cardInfo: CardInfo
   loaded: boolean
-  initiatve: number
+  initiative: number
 
   constructor(playerData: PlayerData) {
     Object.assign(this, playerData)
@@ -63,6 +63,7 @@ export class PlayerCard {
     this.mainMesh = model.meshes[0] as BABYLON.Mesh
 
 
+    this.mainMesh = model.meshes[0]
     this.parent.addChild(model.meshes[0])
     this.setPosition(initialPos)
     this.setRotation(initalRot)
@@ -130,6 +131,7 @@ export class PlayerCard {
     bold: boolean
   ) {
     const font = bold ?  `bold ${fontSize * 4}px Runescape Chat` : `${fontSize * 4}px "Jacquard 12"` 
+
     const textureName = new BABYLON.DynamicTexture(
       'nameTexture',
       { width: 1600, height: 400 },
@@ -141,6 +143,7 @@ export class PlayerCard {
     part.material = materialName
 
     textureName.drawText(text, x, y, font, '#FAFA33', '#181416', false, true)
+
   }
 
   async setPictureMaterial() {
