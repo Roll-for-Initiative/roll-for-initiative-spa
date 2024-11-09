@@ -1,16 +1,13 @@
 import * as BABYLON from 'babylonjs'
 import 'babylonjs-loaders'
-import { animationAsync, degToRad } from './utils'
-
+import { animationAsync } from './utils'
 type PlayerData = {
-  xPos: number
-  yPos: number
   name: string
   roll: number
   imgUrl: string
   scene: BABYLON.Scene
-  parent: BABYLON.AbstractMesh
-  mainMesh?: BABYLON.AbstractMesh
+  parent: BABYLON.TransformNode
+  mainMesh?: BABYLON.Mesh
   cardInfo: {
     cardOrigin: BABYLON.Vector3
     cardAngle: number
@@ -23,7 +20,6 @@ type PlayerData = {
 type cardParts = {
   backdrop: BABYLON.AbstractMesh
   name: BABYLON.AbstractMesh
-  initiative?: BABYLON.AbstractMesh | null
   meta: BABYLON.AbstractMesh
   picture: BABYLON.AbstractMesh
 }
@@ -40,15 +36,13 @@ const IMAGES = ['dragon.jpg', 'dwarf.jpg', 'wizard.jpg']
 const MONSTERS = ['monsters.jpg']
 
 export class PlayerCard {
-  xPos: number
-  yPos: number
   name: string
   roll: number
   imgUrl: string
   scene: BABYLON.Scene
   parts: cardParts
   parent: BABYLON.Mesh
-  mainMesh: BABYLON.AbstractMesh
+  mainMesh: BABYLON.Mesh
   position: BABYLON.Vector3
   rotation: BABYLON.Quaternion
   cardInfo: CardInfo
@@ -66,25 +60,37 @@ export class PlayerCard {
       '',
       this.scene
     )
+    this.mainMesh = model.meshes[0] as BABYLON.Mesh
+
+
     this.mainMesh = model.meshes[0]
     this.parent.addChild(model.meshes[0])
     this.setPosition(initialPos)
     this.setRotation(initalRot)
 
-    for (const t of model.meshes) {
-      console.log(t.name)
-    }
-
     this.parts = {
       backdrop: model.meshes[5],
       name: model.meshes[2],
-      // initiative: model.meshes[0].getChildMeshes(false, (mesh) => mesh.name === 'initiative')[0],
       meta: model.meshes[4],
       picture: model.meshes[3]
     }
 
+    this.parts.picture.metadata = {
+      onPointerEnter: ()=>{this.hoverStart()},
+      onPointerLeave: ()=>{this.hoverLeave()}
+    } 
     this.parent.setEnabled(false)
     await this.setMaterials()
+  }
+
+  hoverStart(){
+    console.log('hover start')
+    this.cardInfo.cardPosition._x = 2.5
+  }
+
+  hoverLeave(){
+    console.log('hover leave')
+    this.cardInfo.cardPosition._x =    -this.cardInfo.index * 0.25
   }
 
   setPosition(position: BABYLON.Vector3) {
@@ -103,14 +109,15 @@ export class PlayerCard {
     mat.albedoColor = new BABYLON.Color3(0.04, 0.04, 0.04)
     mat.roughness = 1
     this.parts.backdrop.material = mat
-    this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 60, 80)
+    this.setDynamicTexture(this.parts.name, 'name_texture', this.name, 82, 120, 240,false)
     this.setDynamicTexture(
       this.parts.meta,
       'initiave_texture',
-      this.roll.toString() + ' + ' + this.initiative.toString(),
-      52,
+      this.roll.toString() + ' + ' + this.initiatve.toString(),
+      64,
       120,
-      80
+      320, 
+      true
     )
   }
 
@@ -120,20 +127,23 @@ export class PlayerCard {
     text: string,
     fontSize: number,
     x: number,
-    y: number
+    y: number,
+    bold: boolean
   ) {
-    const font = `${fontSize}px RuneScape Chat`
+    const font = bold ?  `bold ${fontSize * 4}px Runescape Chat` : `${fontSize * 4}px "Jacquard 12"` 
+
     const textureName = new BABYLON.DynamicTexture(
       'nameTexture',
-      { width: 400, height: 100 },
+      { width: 1600, height: 400 },
       this.scene
     )
     const materialName = new BABYLON.PBRMaterial(name, this.scene)
-    materialName.roughness = 1
+    materialName.unlit = true
     materialName.albedoTexture = textureName
     part.material = materialName
 
-    textureName.drawText(text, x, y, font, '#FAFA33', '#353535', false, true)
+    textureName.drawText(text, x, y, font, '#FAFA33', '#181416', false, true)
+
   }
 
   async setPictureMaterial() {
@@ -190,7 +200,6 @@ export class PlayerCard {
   //   t = Math.sin(t * Math.PI * 0.5)
   //   this.mainMesh.position = BABYLON.Vector3.Lerp(this.startPos, this.endPos, t)
   // }
-
   async reveal() {
     return await animationAsync((resolver) => {
       BABYLON.Animation.CreateAndStartAnimation(

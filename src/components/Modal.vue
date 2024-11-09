@@ -1,15 +1,24 @@
 <template>
-  <dialog class="modal" ref="modal" :open="modalStore.modalIsOpen">
-    <div class="container">
-      <h1 class="modal__title display-2">{{ title }}</h1>
+  <transition>
+    <dialog class="modal" ref="modal" v-if="modalStore.modalIsOpen" :open="true">
+      <h1 class="display-1 modal__backdrop">
+        May the Gods <br />
+        have Mercy
+      </h1>
 
-      <div class="modal__content row">
-        <div class="col-12">
-          <slot></slot>
+      <div class="modal__wrapper">
+        <div class="container">
+          <h1 class="modal__title display-2">{{ title }}</h1>
+
+          <div class="modal__content row">
+            <div class="col-12">
+              <slot></slot>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </dialog>
+    </dialog>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -47,7 +56,8 @@ onUnmounted(() => {
 @use '@/assets/scss/variables' as *;
 
 .modal {
-  background-color: var(--rfi-body-bg);
+  background-color: transparent;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
@@ -58,7 +68,32 @@ onUnmounted(() => {
   padding: 0;
   border: 0;
   color: unset;
+  overflow: hidden;
+}
+
+.modal__wrapper {
+  position: absolute;
+  background-color: var(--rfi-body-bg);
   overflow-y: scroll;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+}
+
+.modal__backdrop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  font-size: 18vw;
+  line-height: 1.5;
+  z-index: 0;
 }
 
 .modal__title {
@@ -74,5 +109,32 @@ onUnmounted(() => {
   position: relative;
   z-index: 10;
   margin-block: 6.5rem;
+}
+</style>
+
+<style lang="scss" scoped>
+.v-leave-from {
+  opacity: 1;
+}
+
+.v-leave-to {
+  opacity: 0;
+
+  .modal__backdrop {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+.v-leave-active {
+  pointer-events: none;
+  transition: opacity 3s ease;
+
+  .modal__wrapper {
+    display: none;
+  }
+
+  .modal__backdrop {
+    transition: transform 3s linear;
+  }
 }
 </style>
