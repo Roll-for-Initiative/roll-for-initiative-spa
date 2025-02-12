@@ -76,6 +76,8 @@ export class PlayerCard {
       picture: model.meshes[3]
     }
 
+
+
     this.parts.picture.metadata = {
       onPointerEnter: ()=>{this.hoverStart()},
       onPointerLeave: ()=>{this.hoverLeave()}

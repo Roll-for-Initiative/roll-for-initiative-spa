@@ -28,15 +28,13 @@ export default class Scene {
 
   async init() {
     this.initScene()
-    // this.scene.debugLayer.show()
+    this.scene.debugLayer.show()
 
     this.initCamera()
     this.initLights()
     this.initWorld()
-
-    this.initPostProcessing()
     this.initShader()
-
+    this.initPostProcessing()
     this.readPlayersFromLocalStore()
   }
 
@@ -63,10 +61,11 @@ export default class Scene {
       set.systems[0].updateSpeed = 0.1
       set.start()
     })
+
   }
 
   initCamera() {
-    const MASK = 0x10000000
+    const MASK = 0x10000000;
     this.camera = new BABYLON.ArcRotateCamera(
       'Camera',
       0,
@@ -90,9 +89,9 @@ export default class Scene {
 
     this.camera2.setTarget(new BABYLON.Vector3(0, 2, 0))
     this.camera2.attachControl(this.canvas, false)
-    this.camera2.layerMask = MASK
+    this.camera2.layerMask=MASK
 
-    this.scene.activeCameras = [this.camera2, this.camera]
+    this.scene.activeCameras = [this.camera2, this.camera, ]
   }
 
   initWorld() {
@@ -101,7 +100,8 @@ export default class Scene {
     new Background(this.scene)
   }
 
-  initShader() {
+  initShader(){
+
     BABYLON.Effect.ShadersStore['customFragmentShader'] = `
     #version 300 es
     precision highp float;
@@ -116,6 +116,18 @@ export default class Scene {
     // Parameters
     uniform vec2 resolution;
     uniform float threshold;
+    
+    const mat2x2 bayerMatrix2x2 = mat2x2(
+        0.0, 2.0,
+        3.0, 1.0
+    ) / 4.0;
+    
+    const mat4x4 bayerMatrix4x4 = mat4x4(
+        0.0,  8.0,  2.0, 10.0,
+        12.0, 4.0,  14.0, 6.0,
+        3.0,  11.0, 1.0, 9.0,
+        15.0, 7.0,  13.0, 5.0
+    ) / 16.0;
     
     const float bayerMatrix8x8[64] = float[64](
         0.0/ 64.0, 48.0/ 64.0, 12.0/ 64.0, 60.0/ 64.0,  3.0/ 64.0, 51.0/ 64.0, 15.0/ 64.0, 63.0/ 64.0,
@@ -132,12 +144,26 @@ export default class Scene {
       vec3 color = vec3(0.0);
     
       float threshold = 0.0;
-      
-      int x = int(uv.x * resolution.x) % 8;
-      int y = int(uv.y * resolution.y) % 8;
-      threshold = bayerMatrix8x8[y * 8 + x];
     
-      if (lum < threshold + bias) {
+      if (matrixSize == 2.0) {
+        int x = int(uv.x * resolution.x) % 2;
+        int y = int(uv.y * resolution.y) % 2;
+        threshold = bayerMatrix2x2[y][x];
+      }
+    
+      if (matrixSize == 4.0) {
+        int x = int(uv.x * resolution.x) % 4;
+        int y = int(uv.y * resolution.y) % 4;
+        threshold = bayerMatrix4x4[y][x];
+      }
+    
+      if (matrixSize == 8.0) {
+        int x = int(uv.x * resolution.x) % 8;
+        int y = int(uv.y * resolution.y) % 8;
+        threshold = bayerMatrix8x8[y * 8 + x];
+      }
+    
+      if (lum < threshold) {
           color = vec3(0.0);
       } else {
           color = vec3(1.0); 
@@ -148,10 +174,10 @@ export default class Scene {
     
     out vec4 fragColor;
     
-    void main(void) {
+    void mainImage(void) {
         vec4 color = texture(textureSampler, vUV);
         float lum = dot(vec3(0.2126, 0.7152, 0.0722), color.rgb);
-        color.rgb = orderedDither(vUV, lum);
+        color.rgb = orderedDither(vUV, lum + 0.025);
     
       fragColor = color;
     }
@@ -160,22 +186,24 @@ export default class Scene {
     const postProcess = new BABYLON.PostProcess(
       'My custom post process',
       'custom',
-      ['resolution', 'threshold', 'matrixSize', 'bias'],
+      ["resolution", "threshold", "matrixSize", "bias"],
       null,
       1,
       this.camera
     )
-    postProcess.onApply = (effect) => {
-      const { width, height } = this.canvas.getBoundingClientRect()
+    postProcess.onApply =  (effect)=>{
+      const {width, height} = this.canvas.getBoundingClientRect();
       effect.setFloat2('resolution', width, height)
       effect.setFloat('matrixSize', 8.0)
-      effect.setFloat('bias', 0.4)
+      effect.setFloat('bias', 0.075)
     }
   }
 
   initLights() {
     const light = new BABYLON.HemisphericLight('test', new BABYLON.Vector3(0, 1, -1))
-    light.intensity = 1
+    light.intensity = 2
+    light.diffuse = BABYLON.Color3.Yellow()
+
   }
 
   async clearScene() {
@@ -226,15 +254,12 @@ export default class Scene {
     const blendMode = BABYLON.ImageProcessingConfiguration.VIGNETTEMODE_OPAQUE
 
     defaultPipeline.fxaaEnabled = true
-    defaultPipeline.samples = 4
-    defaultPipeline.sharpen.edgeAmount = 1
-
-    defaultPipeline.sharpenEnabled = true
     defaultPipeline.imageProcessingEnabled = true
+    defaultPipeline.imageProcessing.colorCurvesEnabled = true
     defaultPipeline.imageProcessing.vignetteEnabled = true
     defaultPipeline.imageProcessing.toneMappingEnabled = true
     defaultPipeline.imageProcessing.vignetteBlendMode = blendMode
-    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0,0,0,0.0)
-    defaultPipeline.imageProcessing.vignetteWeight = 0.5
+    defaultPipeline.imageProcessing.vignetteColor = new BABYLON.Color4(1, 0.984, 0)
+    defaultPipeline.imageProcessing.vignetteWeight = 0.0025
   }
 }

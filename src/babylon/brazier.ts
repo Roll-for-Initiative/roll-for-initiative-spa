@@ -29,22 +29,23 @@ export default class Brazier {
 
     const partStone = model.meshes[2]
     const stoneMat = new BABYLON.PBRMaterial('stone_mat')
-    stoneMat.albedoColor = new BABYLON.Color3(138 / 255, 129 / 255, 124 / 255)
+    // stoneMat.albedoColor = new BABYLON.Color3(138 / 255, 129 / 255, 124 / 255)
     stoneMat.roughness = 1
     partStone.material = stoneMat
 
     const partGold = model.meshes[1]
     const goldMat = new BABYLON.PBRMaterial('goldMat')
-    goldMat.albedoColor = new BABYLON.Color3(250 / 255, 214 / 255, 55 / 255)
+    // goldMat.albedoColor = new BABYLON.Color3(250 / 255, 214 / 255, 55 / 255)
     goldMat.roughness = 1
     partGold.material = goldMat
     BABYLON.ParticleHelper.BaseAssetsUrl = './'
     const fireSystem = await BABYLON.ParticleHelper.CreateAsync('fire2System', this.scene, false)
 
-    const fireLight1 = new BABYLON.PointLight('fire1', this.position.add(new BABYLON.Vector3(0, 12, 0)), this.scene)
-    fireLight1.diffuse = new BABYLON.Color3(0, 100 / 255, 0)
-    fireLight1.intensity = 250
+    // const fireLight1 = new BABYLON.PointLight('fire1', this.position.add(new BABYLON.Vector3(0, 12, 0)), this.scene)
+    // fireLight1.diffuse = new BABYLON.Color3(0, 100 / 255, 0)
+    // fireLight1.intensity = 250
 
     fireSystem.start(this.mesh)
+    console.log(fireSystem)
   }
 }
