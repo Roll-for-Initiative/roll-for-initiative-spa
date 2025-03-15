@@ -1,11 +1,6 @@
 <template>
   <transition>
     <dialog class="modal" ref="modal" v-if="modalStore.modalIsOpen" :open="true">
-      <h1 class="display-1 modal__backdrop">
-        May the Gods <br />
-        have Mercy
-      </h1>
-
       <div class="modal__wrapper">
         <div class="container">
           <h1 class="modal__title display-2">{{ title }}</h1>
@@ -84,18 +79,6 @@ onUnmounted(() => {
   z-index: 10;
 }
 
-.modal__backdrop {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  text-align: center;
-  font-size: 18vw;
-  line-height: 1.5;
-  z-index: 0;
-}
-
 .modal__title {
   width: 100%;
   position: fixed;
@@ -119,10 +102,6 @@ onUnmounted(() => {
 
 .v-leave-to {
   opacity: 0;
-
-  .modal__backdrop {
-    transform: translate(-50%, -50%) scale(0.9);
-  }
 }
 
 .v-leave-active {
@@ -131,10 +110,6 @@ onUnmounted(() => {
 
   .modal__wrapper {
     display: none;
-  }
-
-  .modal__backdrop {
-    transition: transform 3s linear;
   }
 }
 </style>
